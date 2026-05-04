@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session
 from flask_login import login_required, current_user
-from flask_mailman import EmailMessage
+import resend
 from models import db, Profile, City, Specialty, ProfileImage, Payment, ProfileService, Message
 from datetime import datetime, timedelta
 import cloudinary
@@ -308,22 +308,21 @@ def send_contact(slug):
 
     # Email notification to lawyer
     lawyer_email = profile.email or profile.user.email if profile.user else None
-    if lawyer_email and current_app.config.get('MAIL_PASSWORD'):
+    if lawyer_email and current_app.config.get('RESEND_API_KEY'):
         try:
-            email_body = (
-                f"Nueva consulta en abogados.com.co / New inquiry on abogados.com.co\n\n"
-                f"De / From: {sender_name} <{sender_email}>\n"
-                f"Teléfono / Phone: {sender_phone or '—'}\n\n"
-                f"{body}\n\n"
-                f"---\nInicia sesión para responder / Log in to reply:\n"
-                f"{current_app.config['BASE_URL']}/mi-perfil/mensajes"
-            )
-            mail_msg = EmailMessage(
-                subject=f"Nueva consulta — abogados.com.co",
-                to=[lawyer_email],
-                body=email_body
-            )
-            mail_msg.send()
+            resend.Emails.send({
+                "from": current_app.config.get('MAIL_FROM', 'noreply@abogados.com.co'),
+                "to": [lawyer_email],
+                "subject": "Nueva consulta — abogados.com.co",
+                "text": (
+                    f"Nueva consulta en abogados.com.co\n\n"
+                    f"De: {sender_name} <{sender_email}>\n"
+                    f"Teléfono: {sender_phone or '—'}\n\n"
+                    f"{body}\n\n"
+                    f"---\nInicia sesión para responder:\n"
+                    f"{current_app.config['BASE_URL']}/mi-perfil/mensajes"
+                )
+            })
         except Exception:
             pass
 
@@ -403,20 +402,19 @@ def reply_message(msg_id):
     msg.is_read = True
     db.session.commit()
 
-    if current_app.config.get('MAIL_PASSWORD'):
+    if current_app.config.get('RESEND_API_KEY'):
         try:
-            email_body = (
-                f"Hola {msg.sender_name},\n\n"
-                f"El abogado/bufete {profile.name} ha respondido a tu consulta en abogados.com.co:\n\n"
-                f"{reply_text}\n\n"
-                f"---\nabogados.com.co"
-            )
-            mail_msg = EmailMessage(
-                subject=f"Respuesta de {profile.name} — abogados.com.co",
-                to=[msg.sender_email],
-                body=email_body
-            )
-            mail_msg.send()
+            resend.Emails.send({
+                "from": current_app.config.get('MAIL_FROM', 'noreply@abogados.com.co'),
+                "to": [msg.sender_email],
+                "subject": f"Respuesta de {profile.name} — abogados.com.co",
+                "text": (
+                    f"Hola {msg.sender_name},\n\n"
+                    f"{profile.name} ha respondido a tu consulta en abogados.com.co:\n\n"
+                    f"{reply_text}\n\n"
+                    f"---\nabogados.com.co"
+                )
+            })
         except Exception:
             pass
 

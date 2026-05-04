@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_mailman import Mail
+import resend
 from models import db, User
 from routes.main import main_bp
 from routes.profiles import profiles_bp
@@ -10,7 +10,6 @@ from routes.auth import auth_bp
 from routes.admin import admin_bp
 from routes.payments import payments_bp
 
-mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -29,16 +28,15 @@ def create_app():
     app.config['ADMIN_EMAIL'] = os.environ.get('ADMIN_EMAIL', 'davidmyrann@gmail.com')
     app.config['BASE_URL'] = os.environ.get('BASE_URL', 'http://localhost:5000')
 
-    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
-    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@abogados.com.co')
+    app.config['RESEND_API_KEY'] = os.environ.get('RESEND_API_KEY', '')
+    app.config['MAIL_FROM'] = os.environ.get('MAIL_FROM', 'noreply@abogados.com.co')
 
     db.init_app(app)
     Migrate(app, db)
-    mail.init_app(app)
+
+    resend_key = app.config.get('RESEND_API_KEY', '')
+    if resend_key:
+        resend.api_key = resend_key
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
