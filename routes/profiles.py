@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session
 from flask_login import login_required, current_user
-from flask_mail import Message as MailMessage
+from flask_mailman import EmailMessage
 from models import db, Profile, City, Specialty, ProfileImage, Payment, ProfileService, Message
 from datetime import datetime, timedelta
 import cloudinary
@@ -310,7 +310,6 @@ def send_contact(slug):
     lawyer_email = profile.email or profile.user.email if profile.user else None
     if lawyer_email and current_app.config.get('MAIL_PASSWORD'):
         try:
-            from app import mail
             email_body = (
                 f"Nueva consulta en abogados.com.co / New inquiry on abogados.com.co\n\n"
                 f"De / From: {sender_name} <{sender_email}>\n"
@@ -319,12 +318,12 @@ def send_contact(slug):
                 f"---\nInicia sesión para responder / Log in to reply:\n"
                 f"{current_app.config['BASE_URL']}/mi-perfil/mensajes"
             )
-            mail_msg = MailMessage(
+            mail_msg = EmailMessage(
                 subject=f"Nueva consulta — abogados.com.co",
-                recipients=[lawyer_email],
+                to=[lawyer_email],
                 body=email_body
             )
-            mail.send(mail_msg)
+            mail_msg.send()
         except Exception:
             pass
 
@@ -406,19 +405,18 @@ def reply_message(msg_id):
 
     if current_app.config.get('MAIL_PASSWORD'):
         try:
-            from app import mail
             email_body = (
                 f"Hola {msg.sender_name},\n\n"
                 f"El abogado/bufete {profile.name} ha respondido a tu consulta en abogados.com.co:\n\n"
                 f"{reply_text}\n\n"
                 f"---\nabogados.com.co"
             )
-            mail_msg = MailMessage(
+            mail_msg = EmailMessage(
                 subject=f"Respuesta de {profile.name} — abogados.com.co",
-                recipients=[msg.sender_email],
+                to=[msg.sender_email],
                 body=email_body
             )
-            mail.send(mail_msg)
+            mail_msg.send()
         except Exception:
             pass
 

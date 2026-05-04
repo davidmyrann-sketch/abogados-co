@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
-from flask_mail import Mail
+from flask_mailman import Mail
 from models import db, User
 from routes.main import main_bp
 from routes.profiles import profiles_bp
