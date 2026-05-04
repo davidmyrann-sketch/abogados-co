@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Usuarios — Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h2 class="fw-bold">Usuarios ({{ users.total }})</h2>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary btn-sm">← Admin</a>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <table class="table table-sm table-hover mb-0">
+            <thead class="table-light"><tr><th>ID</th><th>Email</th><th>Nombre</th><th>Admin</th><th>Registrado</th><th>Acción</th></tr></thead>
+            <tbody>
+            {% for u in users.items %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.full_name or '—' }}</td>
+                <td>{% if u.is_admin %}<span class="badge bg-danger">Admin</span>{% endif %}</td>
+                <td class="small">{{ u.created_at.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin.toggle_admin', user_id=u.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Toggle admin</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

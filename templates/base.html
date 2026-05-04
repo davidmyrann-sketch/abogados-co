@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Abogados.com.co — Encuentra tu abogado en Colombia{% endblock %}</title>
+    <meta name="description" content="{% block description %}Directorio de abogados y bufetes jurídicos en Colombia. Encuentra especialistas en derecho laboral, civil, penal, familiar y más.{% endblock %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
+            <i class="fas fa-balance-scale me-2"></i>Abogados.com.co
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.list_profiles') }}">Abogados</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.search') }}">Buscar</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">Quiénes somos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.faq') }}">Preguntas</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}"><i class="fas fa-cog"></i> Admin</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.my_profile') }}"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Salir</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-warning text-dark px-3 ms-2 fw-semibold" href="{{ url_for('profiles.new_profile') }}">Publicar perfil</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'danger' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h6 class="fw-bold"><i class="fas fa-balance-scale me-2"></i>Abogados.com.co</h6>
+                <p class="small text-muted">El directorio jurídico líder de Colombia. Encuentra el abogado que necesitas.</p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold">Ciudades principales</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{{ url_for('profiles.by_city', slug='bogota') }}" class="text-muted text-decoration-none">Bogotá</a></li>
+                    <li><a href="{{ url_for('profiles.by_city', slug='medellin') }}" class="text-muted text-decoration-none">Medellín</a></li>
+                    <li><a href="{{ url_for('profiles.by_city', slug='cali') }}" class="text-muted text-decoration-none">Cali</a></li>
+                    <li><a href="{{ url_for('profiles.by_city', slug='barranquilla') }}" class="text-muted text-decoration-none">Barranquilla</a></li>
+                    <li><a href="{{ url_for('profiles.by_city', slug='cartagena-de-indias') }}" class="text-muted text-decoration-none">Cartagena</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="fw-bold">Para abogados</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{{ url_for('profiles.new_profile') }}" class="text-muted text-decoration-none">Publicar perfil</a></li>
+                    <li><a href="{{ url_for('auth.login') }}" class="text-muted text-decoration-none">Acceder</a></li>
+                    <li><a href="{{ url_for('main.faq') }}" class="text-muted text-decoration-none">Preguntas frecuentes</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-secondary">
+        <p class="text-center text-muted small mb-0">© 2025 Abogados.com.co — Todos los derechos reservados</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

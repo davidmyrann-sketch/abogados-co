@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Preguntas frecuentes — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-4">Preguntas frecuentes</h1>
+            <div class="accordion" id="faq">
+                <div class="accordion-item border-0 shadow-sm mb-2">
+                    <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#q1">¿Cómo publico mi perfil de abogado?</button></h2>
+                    <div id="q1" class="accordion-collapse collapse show">
+                        <div class="accordion-body text-muted">Crea una cuenta, completa los datos de tu bufete o despacho, elige tu plan y realiza el pago de apertura de $100 USD (incluye el primer mes). Tu perfil estará activo en minutos.</div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-2">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">¿Qué incluye la tarifa de apertura de $100 USD?</button></h2>
+                    <div id="q2" class="accordion-collapse collapse">
+                        <div class="accordion-body text-muted">La tarifa de apertura cubre el primer mes completo en el plan que elijas. A partir del mes 2, pagas únicamente la tarifa mensual de tu plan ($5, $20 o $35).</div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-2">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q3">¿Puedo recuperar mi URL anterior?</button></h2>
+                    <div id="q3" class="accordion-collapse collapse">
+                        <div class="accordion-body text-muted">Sí. Si tu bufete estuvo en nuestra plataforma anteriormente, tu URL original está reservada. Búscala directamente o contáctanos y te ayudamos a recuperarla.</div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 shadow-sm mb-2">
+                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q4">¿Puedo cancelar en cualquier momento?</button></h2>
+                    <div id="q4" class="accordion-collapse collapse">
+                        <div class="accordion-body text-muted">Sí. Puedes eliminar tu perfil cuando quieras desde tu panel de usuario. La URL quedará disponible para otros abogados.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

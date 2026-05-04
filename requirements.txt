@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Migrate==4.0.7
+psycopg2-binary==2.9.9
+stripe==10.5.0
+cloudinary==1.40.0
+Werkzeug==3.0.3
+gunicorn==22.0.0
+python-dotenv==1.0.1

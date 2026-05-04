@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Editar mi perfil — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-4">Mi perfil</h2>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nombre del bufete o abogado</label>
+                            <input type="text" name="name" class="form-control" value="{{ profile.name or '' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Ciudad</label>
+                            <select name="city_id" class="form-select">
+                                <option value="">Seleccionar ciudad</option>
+                                {% for city in cities %}
+                                <option value="{{ city.id }}" {% if profile.city_id == city.id %}selected{% endif %}>{{ city.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Especialidades</label>
+                            <select name="specialty_ids" class="form-select" multiple size="6">
+                                {% for s in specialties %}
+                                <option value="{{ s.id }}" {% if s in profile.specialties %}selected{% endif %}>{{ s.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Mantén Ctrl (Cmd en Mac) para seleccionar varias</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Descripción</label>
+                            <textarea name="description" class="form-control" rows="4">{{ profile.description or '' }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Teléfono</label>
+                                <input type="text" name="phone" class="form-control" value="{{ profile.phone or '' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Email de contacto</label>
+                                <input type="email" name="email" class="form-control" value="{{ profile.email or '' }}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Sitio web</label>
+                                <input type="url" name="website" class="form-control" value="{{ profile.website or '' }}" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Dirección</label>
+                                <input type="text" name="address" class="form-control" value="{{ profile.address or '' }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Fotos (máx. 5MB cada una)</label>
+                            <input type="file" name="images" class="form-control" accept="image/*" multiple>
+                        </div>
+                        {% if profile.images %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Fotos actuales</label>
+                            <div class="row g-2">
+                                {% for img in profile.images %}
+                                <div class="col-3">
+                                    <img src="{{ img.url }}" class="img-fluid rounded" style="height:80px;object-fit:cover;width:100%;">
+                                    <form method="POST" action="{{ url_for('profiles.delete_image', image_id=img.id) }}" class="mt-1">
+                                        <button type="submit" class="btn btn-danger btn-sm w-100" style="font-size:0.7rem;">Eliminar</button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary fw-bold">Guardar cambios</button>
+                        <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-secondary ms-2">Ver perfil público</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold">Tu URL</h6>
+                    <code class="small">abogados.com.co/bufetes/{{ profile.slug }}</code>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold">Plan actual</h6>
+                    <span class="badge {% if profile.tier == 'premium' %}bg-warning text-dark{% elif profile.tier == 'profesional' %}bg-primary{% else %}bg-secondary{% endif %} fs-6">
+                        {{ profile.tier|capitalize }}
+                    </span>
+                </div>
+            </div>
+            <div class="card border-danger mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold text-danger">Zona de peligro</h6>
+                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('¿Seguro que deseas eliminar tu perfil? Esta acción no se puede deshacer.')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Eliminar mi perfil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

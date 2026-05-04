@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Perfil en proceso — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+    <i class="fas fa-clock text-warning fa-4x mb-3"></i>
+    <h2 class="fw-bold">Perfil en proceso de activación</h2>
+    <p class="text-muted">Este perfil está siendo verificado. Estará disponible en breve.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-3">Volver al inicio</a>
+</div>
+{% endblock %}

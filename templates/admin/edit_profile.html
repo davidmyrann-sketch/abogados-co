@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Editar perfil — Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h2 class="fw-bold">Editar: <code>{{ profile.slug }}</code></h2>
+        <a href="{{ url_for('admin.profiles') }}" class="btn btn-outline-secondary btn-sm">← Perfiles</a>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="name" class="form-control" value="{{ profile.name or '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Estado</label>
+                        <select name="status" class="form-select">
+                            <option value="available" {% if profile.status=='available' %}selected{% endif %}>Disponible</option>
+                            <option value="active" {% if profile.status=='active' %}selected{% endif %}>Activo</option>
+                            <option value="pending_payment" {% if profile.status=='pending_payment' %}selected{% endif %}>Pendiente</option>
+                            <option value="inactive" {% if profile.status=='inactive' %}selected{% endif %}>Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Plan</label>
+                        <select name="tier" class="form-select">
+                            <option value="basico" {% if profile.tier=='basico' %}selected{% endif %}>Básico ($5)</option>
+                            <option value="profesional" {% if profile.tier=='profesional' %}selected{% endif %}>Profesional ($20)</option>
+                            <option value="premium" {% if profile.tier=='premium' %}selected{% endif %}>Premium ($35)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ciudad</label>
+                        <select name="city_id" class="form-select">
+                            <option value="">Sin ciudad</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if profile.city_id == city.id %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ profile.email or '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="phone" class="form-control" value="{{ profile.phone or '' }}">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="description" class="form-control" rows="3">{{ profile.description or '' }}</textarea>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    {% if profile.status == 'pending_payment' %}
+                    <form method="POST" action="{{ url_for('admin.activate_profile', profile_id=profile.id) }}" class="d-inline ms-2">
+                        <button type="submit" class="btn btn-success">Activar perfil</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('admin.delete_profile', profile_id=profile.id) }}" class="d-inline ms-2" onsubmit="return confirm('¿Eliminar permanentemente?')">
+                        <input type="hidden" name="force" value="1">
+                        <button type="submit" class="btn btn-danger">Eliminar permanentemente</button>
+                    </form>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

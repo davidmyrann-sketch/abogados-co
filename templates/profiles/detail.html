@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.name }} — Abogados.com.co{% endblock %}
+{% block description %}{{ profile.description[:160] if profile.description else profile.name + ' — Abogado en Colombia. Encuentra información de contacto y especialidades.' }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('profiles.list_profiles') }}">Abogados</a></li>
+            {% if profile.city_rel %}
+            <li class="breadcrumb-item"><a href="{{ url_for('profiles.by_city', slug=profile.city_rel.slug) }}">{{ profile.city_rel.name }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ profile.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-3">
+                        {% if profile.images %}
+                        <img src="{{ profile.images[0].url }}" class="rounded me-4" width="100" height="100" style="object-fit:cover;" alt="{{ profile.name }}">
+                        {% else %}
+                        <div class="avatar-placeholder rounded me-4 bg-primary text-white d-flex align-items-center justify-content-center" style="width:100px;height:100px;font-size:2.5rem;">
+                            {{ profile.name[0] if profile.name else 'A' }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h1 class="h3 fw-bold mb-1">{{ profile.name }}</h1>
+                            {% if profile.city_rel %}<p class="text-muted mb-1"><i class="fas fa-map-marker-alt me-1"></i>{{ profile.city_rel.name }}</p>{% endif %}
+                            {% if profile.tier == 'premium' %}
+                            <span class="badge bg-warning text-dark"><i class="fas fa-star me-1"></i>Premium</span>
+                            {% elif profile.tier == 'profesional' %}
+                            <span class="badge bg-primary">Profesional</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if profile.specialties %}
+                    <div class="mb-3">
+                        {% for s in profile.specialties %}
+                        <a href="{{ url_for('profiles.by_specialty', slug=s.slug) }}" class="badge bg-light text-dark border text-decoration-none me-1">{{ s.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if profile.description %}
+                    <h5 class="fw-bold">Sobre nosotros</h5>
+                    <p>{{ profile.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if profile.images|length > 1 %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Galería</h5>
+                    <div class="row g-2">
+                        {% for img in profile.images %}
+                        <div class="col-4">
+                            <img src="{{ img.url }}" class="img-fluid rounded" style="height:150px;object-fit:cover;width:100%;" alt="">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Contacto</h5>
+                    {% if profile.phone %}
+                    <p><i class="fas fa-phone text-primary me-2"></i><a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></p>
+                    {% endif %}
+                    {% if profile.email %}
+                    <p><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>
+                    {% endif %}
+                    {% if profile.website %}
+                    <p><i class="fas fa-globe text-primary me-2"></i><a href="{{ profile.website }}" target="_blank" rel="noopener">Sitio web</a></p>
+                    {% endif %}
+                    {% if profile.address %}
+                    <p><i class="fas fa-map-marker-alt text-primary me-2"></i>{{ profile.address }}</p>
+                    {% endif %}
+                    {% if not profile.phone and not profile.email %}
+                    <p class="text-muted small">No hay datos de contacto disponibles.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated and (current_user.id == profile.user_id or current_user.is_admin) %}
+            <div class="card border-warning mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold">Gestionar perfil</h6>
+                    <a href="{{ url_for('profiles.my_profile') }}" class="btn btn-warning btn-sm w-100 mb-2">Editar perfil</a>
+                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('¿Seguro que deseas eliminar tu perfil?')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Eliminar perfil</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if related %}
+    <hr>
+    <h5 class="fw-bold mb-3">Otros abogados en {{ profile.city_rel.name if profile.city_rel else 'Colombia' }}</h5>
+    <div class="row g-3">
+        {% for p in related %}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="fw-semibold small">{{ p.name }}</div>
+                    <a href="{{ url_for('profiles.profile_detail', slug=p.slug) }}" class="btn btn-outline-primary btn-sm mt-2">Ver</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

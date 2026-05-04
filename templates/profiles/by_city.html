@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Abogados en {{ city.name }} — Abogados.com.co{% endblock %}
+{% block description %}Encuentra abogados y bufetes jurídicos en {{ city.name }}, {{ city.department }}. Especialistas en derecho laboral, civil, penal y más.{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('profiles.list_profiles') }}">Abogados</a></li>
+            <li class="breadcrumb-item active">{{ city.name }}</li>
+        </ol>
+    </nav>
+    <h1 class="h3 fw-bold mb-4">Abogados en {{ city.name }}</h1>
+    <div class="row g-3">
+        {% for profile in profiles.items %}
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 profile-card {% if profile.tier == 'premium' %}premium-card{% endif %}">
+                <div class="card-body">
+                    <div class="fw-semibold">{{ profile.name }}</div>
+                    {% if profile.specialties %}<div class="mt-1">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>{% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-0"><a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">Ver perfil</a></div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12"><p class="text-muted">No hay perfiles activos en {{ city.name }} aún. <a href="{{ url_for('profiles.new_profile') }}">¿Eres abogado aquí? Publica tu perfil.</a></p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

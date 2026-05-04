@@ -1,0 +1,40 @@
+:root {
+    --primary: #1a3c6e;
+    --accent: #e8a020;
+}
+
+body { color: #333; }
+
+.bg-primary { background-color: var(--primary) !important; }
+.btn-primary { background-color: var(--primary); border-color: var(--primary); }
+.btn-primary:hover { background-color: #142f56; border-color: #142f56; }
+.text-primary { color: var(--primary) !important; }
+.border-primary { border-color: var(--primary) !important; }
+
+.hero-section { background: linear-gradient(135deg, #1a3c6e 0%, #2b5ba8 100%); padding: 60px 0; }
+
+.profile-card { transition: transform 0.2s, box-shadow 0.2s; }
+.profile-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,.15) !important; }
+
+.premium-card { border-top: 3px solid var(--accent) !important; }
+
+.plan-card { cursor: pointer; transition: all 0.2s; }
+.plan-label { cursor: pointer; }
+.selected-plan { background-color: #eef4ff !important; border-color: var(--primary) !important; }
+
+.avatar-placeholder { font-weight: 700; }
+
+.hover-shadow:hover { box-shadow: 0 4px 15px rgba(0,0,0,.1); transform: translateY(-1px); transition: all 0.2s; }
+
+.navbar-brand { font-size: 1.3rem; }
+
+.badge { font-size: 0.75rem; }
+
+footer a:hover { color: #fff !important; }
+
+.card { border-radius: 10px; }
+
+@media (max-width: 768px) {
+    .hero-section { padding: 40px 0; }
+    .hero-section h1 { font-size: 1.8rem; }
+}

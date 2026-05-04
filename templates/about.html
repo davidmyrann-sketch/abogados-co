@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Quiénes somos — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-4">Quiénes somos</h1>
+            <p class="lead">Abogados.com.co es el directorio jurídico de referencia en Colombia. Conectamos a personas que necesitan asesoría legal con abogados y bufetes calificados en todo el país.</p>
+            <p>Con más de una década de presencia digital, nuestra plataforma ha sido el punto de encuentro entre clientes y profesionales del derecho en Colombia.</p>
+            <h4 class="fw-bold mt-4">Para abogados y bufetes</h4>
+            <p>Publica tu perfil y llega a miles de personas que buscan asesoría legal cada mes. Elige el plan que mejor se adapte a tus necesidades.</p>
+            <a href="{{ url_for('profiles.new_profile') }}" class="btn btn-primary">Publicar mi perfil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

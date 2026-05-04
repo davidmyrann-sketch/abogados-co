@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Admin — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Panel de administración</h2>
+    <div class="row g-3 mb-4">
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold text-primary">{{ stats.active_profiles }}</div><div class="small text-muted">Perfiles activos</div></div></div>
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold text-warning">{{ stats.pending_profiles }}</div><div class="small text-muted">Pendientes</div></div></div>
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold text-secondary">{{ stats.available_urls }}</div><div class="small text-muted">URLs libres</div></div></div>
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold">{{ stats.total_users }}</div><div class="small text-muted">Usuarios</div></div></div>
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold text-success">{{ stats.total_payments }}</div><div class="small text-muted">Pagos</div></div></div>
+        <div class="col-md-2"><div class="card border-0 shadow-sm text-center p-3"><div class="h3 fw-bold text-success">${{ "%.0f"|format(stats.revenue) }}</div><div class="small text-muted">Ingresos</div></div></div>
+    </div>
+
+    {% if pending_profiles %}
+    <div class="card border-warning mb-4">
+        <div class="card-header bg-warning text-dark fw-bold">⏳ Perfiles pendientes de activación ({{ pending_profiles|length }})</div>
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead><tr><th>Slug</th><th>Usuario</th><th>Plan</th><th>Acción</th></tr></thead>
+                <tbody>
+                {% for p in pending_profiles %}
+                <tr>
+                    <td><code>{{ p.slug }}</code></td>
+                    <td>{{ p.user.email if p.user else '—' }}</td>
+                    <td><span class="badge bg-secondary">{{ p.tier }}</span></td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin.activate_profile', profile_id=p.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Activar</button>
+                        </form>
+                        <a href="{{ url_for('admin.edit_profile', profile_id=p.id) }}" class="btn btn-outline-primary btn-sm ms-1">Editar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header fw-bold">Últimos pagos</div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Perfil</th><th>$</th><th>Estado</th><th>Fecha</th></tr></thead>
+                        <tbody>
+                        {% for pay in recent_payments %}
+                        <tr>
+                            <td><code class="small">{{ pay.profile.slug if pay.profile else '—' }}</code></td>
+                            <td>${{ pay.amount }}</td>
+                            <td><span class="badge {% if pay.status == 'completed' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ pay.status }}</span></td>
+                            <td class="small">{{ pay.created_at.strftime('%d/%m %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header fw-bold">Accesos rápidos</div>
+                <div class="card-body">
+                    <a href="{{ url_for('admin.profiles') }}" class="btn btn-outline-primary btn-sm me-2 mb-2">Todos los perfiles</a>
+                    <a href="{{ url_for('admin.profiles', status='active') }}" class="btn btn-outline-success btn-sm me-2 mb-2">Activos</a>
+                    <a href="{{ url_for('admin.profiles', status='pending_payment') }}" class="btn btn-outline-warning btn-sm me-2 mb-2">Pendientes</a>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary btn-sm me-2 mb-2">Usuarios</a>
+                    <a href="{{ url_for('admin.payments') }}" class="btn btn-outline-info btn-sm mb-2">Pagos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

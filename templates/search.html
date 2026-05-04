@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Buscar abogados — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="q" class="form-control" placeholder="Nombre..." value="{{ q }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="ciudad" class="form-select">
+                        <option value="">Todas las ciudades</option>
+                        {% for city in cities %}
+                        <option value="{{ city.slug }}" {% if city.slug == city_slug %}selected{% endif %}>{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="especialidad" class="form-select">
+                        <option value="">Todas las especialidades</option>
+                        {% for s in specialties %}
+                        <option value="{{ s.slug }}" {% if s.slug == specialty_slug %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+        <h5 class="fw-bold mb-0">{{ profiles.total }} resultado{{ 's' if profiles.total != 1 }}</h5>
+    </div>
+
+    <div class="row g-3">
+        {% for profile in profiles.items %}
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 profile-card {% if profile.tier == 'premium' %}premium-card{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        {% if profile.images %}
+                        <img src="{{ profile.images[0].url }}" class="rounded-circle me-2" width="45" height="45" style="object-fit:cover;">
+                        {% else %}
+                        <div class="avatar-placeholder rounded-circle me-2 bg-primary text-white d-flex align-items-center justify-content-center" style="width:45px;height:45px;">{{ profile.name[0] if profile.name else 'A' }}</div>
+                        {% endif %}
+                        <div>
+                            <div class="fw-semibold small">{{ profile.name }}</div>
+                            {% if profile.city_rel %}<div class="text-muted" style="font-size:0.75rem;">{{ profile.city_rel.name }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% if profile.specialties %}<div>{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>{% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">Ver perfil</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No se encontraron resultados para tu búsqueda.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if profiles.pages > 1 %}
+    <nav class="mt-4"><ul class="pagination justify-content-center">
+        {% for page in profiles.iter_pages() %}{% if page %}
+        <li class="page-item {% if page == profiles.page %}active{% endif %}">
+            <a class="page-link" href="?page={{ page }}&q={{ q }}&ciudad={{ city_slug }}&especialidad={{ specialty_slug }}">{{ page }}</a>
+        </li>
+        {% else %}<li class="page-item disabled"><span class="page-link">…</span></li>{% endif %}{% endfor %}
+    </ul></nav>
+    {% endif %}
+</div>
+{% endblock %}
