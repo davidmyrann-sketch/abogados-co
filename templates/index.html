@@ -27,7 +27,7 @@
                 <select name="especialidad" class="form-select form-select-lg">
                     <option value="">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</option>
                     {% for spec in specialties %}
-                    <option value="{{ spec.slug }}">{{ spec.name }}</option>
+                    <option value="{{ spec.slug }}">{{ spec_name(spec) }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -69,7 +69,7 @@
                         {% if profile.specialties %}
                         <div class="mb-2">
                             {% for s in profile.specialties[:3] %}
-                            <span class="badge bg-light text-dark border me-1">{{ s.name }}</span>
+                            <span class="badge bg-light text-dark border me-1">{{ spec_name(s) }}</span>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -113,7 +113,7 @@
             {% for spec in specialties[:18] %}
             <div class="col-6 col-md-4 col-lg-3">
                 <a href="{{ url_for('profiles.by_specialty', slug=spec.slug) }}" class="text-decoration-none">
-                    <div class="p-2 border rounded small text-center text-dark bg-white hover-shadow">{{ spec.name }}</div>
+                    <div class="p-2 border rounded small text-center text-dark bg-white hover-shadow">{{ spec_name(spec) }}</div>
                 </a>
             </div>
             {% endfor %}

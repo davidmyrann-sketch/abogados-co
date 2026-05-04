@@ -20,7 +20,7 @@
                     <select name="especialidad" class="form-select">
                         <option value="">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</option>
                         {% for s in specialties %}
-                        <option value="{{ s.slug }}" {% if s.slug == specialty_slug %}selected{% endif %}>{{ s.name }}</option>
+                        <option value="{{ s.slug }}" {% if s.slug == specialty_slug %}selected{% endif %}>{{ spec_name(s) }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -51,7 +51,7 @@
                             {% if profile.city_rel %}<div class="text-muted" style="font-size:0.75rem;">{{ profile.city_rel.name }}</div>{% endif %}
                         </div>
                     </div>
-                    {% if profile.specialties %}<div>{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>{% endif %}
+                    {% if profile.specialties %}<div>{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ spec_name(s) }}</span>{% endfor %}</div>{% endif %}
                 </div>
                 <div class="card-footer bg-transparent border-0">
                     <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">{{ 'View profile' if lang=='en' else 'Ver perfil' }}</a>

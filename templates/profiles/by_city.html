@@ -17,7 +17,7 @@
             <div class="card border-0 shadow-sm h-100 profile-card {% if profile.tier == 'premium' %}premium-card{% endif %}">
                 <div class="card-body">
                     <div class="fw-semibold">{{ profile.name }}</div>
-                    {% if profile.specialties %}<div class="mt-1">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>{% endif %}
+                    {% if profile.specialties %}<div class="mt-1">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ spec_name(s) }}</span>{% endfor %}</div>{% endif %}
                 </div>
                 <div class="card-footer bg-transparent border-0"><a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">{{ 'View profile' if lang=='en' else 'Ver perfil' }}</a></div>
             </div>

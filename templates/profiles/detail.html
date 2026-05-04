@@ -41,7 +41,7 @@
                     {% if profile.specialties %}
                     <div class="mb-3">
                         {% for s in profile.specialties %}
-                        <a href="{{ url_for('profiles.by_specialty', slug=s.slug) }}" class="badge bg-light text-dark border text-decoration-none me-1">{{ s.name }}</a>
+                        <a href="{{ url_for('profiles.by_specialty', slug=s.slug) }}" class="badge bg-light text-dark border text-decoration-none me-1">{{ spec_name(s) }}</a>
                         {% endfor %}
                     </div>
                     {% endif %}

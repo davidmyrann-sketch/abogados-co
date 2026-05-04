@@ -66,7 +66,14 @@ def create_app():
             profile = Profile.query.filter_by(user_id=current_user.id).first()
             if profile:
                 unread = Message.query.filter_by(profile_id=profile.id, is_read=False).count()
-        return {'lang': flask_session.get('lang', 'es'), 'unread_count': unread}
+        lang = flask_session.get('lang', 'es')
+
+        def spec_name(spec):
+            if lang == 'en' and spec.name_en:
+                return spec.name_en
+            return spec.name
+
+        return {'lang': lang, 'unread_count': unread, 'spec_name': spec_name}
 
     return app
 

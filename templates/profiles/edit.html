@@ -27,7 +27,7 @@
                             <label class="form-label fw-semibold">{{ 'Specialties' if lang=='en' else 'Especialidades' }}</label>
                             <select name="specialty_ids" class="form-select" multiple size="6">
                                 {% for s in specialties %}
-                                <option value="{{ s.id }}" {% if s in profile.specialties %}selected{% endif %}>{{ s.name }}</option>
+                                <option value="{{ s.id }}" {% if s in profile.specialties %}selected{% endif %}>{{ spec_name(s) }}</option>
                                 {% endfor %}
                             </select>
                             <small class="text-muted">{{ 'Hold Ctrl (Cmd on Mac) to select multiple' if lang=='en' else 'Mantén Ctrl (Cmd en Mac) para seleccionar varias' }}</small>

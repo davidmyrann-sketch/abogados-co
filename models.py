@@ -41,6 +41,7 @@ class Specialty(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String(150), unique=True, nullable=False)
     name = db.Column(db.String(150), nullable=False)
+    name_en = db.Column(db.String(150))
 
 
 class Profile(db.Model):

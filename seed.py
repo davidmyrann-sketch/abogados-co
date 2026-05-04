@@ -60,46 +60,46 @@ CITIES = [
 ]
 
 SPECIALTIES = [
-    ('accion-de-tutela', 'Acción de Tutela'),
-    ('accion-de-cumplimiento', 'Acción de Cumplimiento'),
-    ('acciones-de-grupo', 'Acciones de Grupo'),
-    ('acciones-populares', 'Acciones Populares'),
-    ('acciones-electorales', 'Acciones Electorales'),
-    ('acoso-laboral', 'Acoso Laboral'),
-    ('adopciones', 'Adopciones'),
-    ('adquisiciones', 'Adquisiciones'),
-    ('aduanas', 'Aduanas'),
-    ('arbitraje', 'Arbitraje'),
-    ('asesoria', 'Asesoría Jurídica'),
-    ('auditorias', 'Auditorías'),
-    ('capitulaciones', 'Capitulaciones'),
-    ('cobro-juridico', 'Cobro Jurídico'),
-    ('comercio-electronico', 'Comercio Electrónico'),
-    ('comercio-exterior', 'Comercio Exterior'),
-    ('competencia', 'Derecho de Competencia'),
-    ('conciliaciones', 'Conciliaciones'),
-    ('contencioso-administrativo', 'Contencioso Administrativo'),
-    ('contratacion-publica', 'Contratación Pública'),
-    ('contrato-arrendamiento', 'Contrato de Arrendamiento'),
-    ('contratos', 'Contratos'),
-    ('contratos-de-trabajo', 'Contratos de Trabajo'),
-    ('derecho-administrativo', 'Derecho Administrativo'),
-    ('derecho-civil', 'Derecho Civil'),
-    ('derecho-comercial', 'Derecho Comercial'),
-    ('derecho-constitucional', 'Derecho Constitucional'),
-    ('derecho-de-familia', 'Derecho de Familia'),
-    ('derecho-laboral', 'Derecho Laboral'),
-    ('derecho-penal', 'Derecho Penal'),
-    ('derecho-tributario', 'Derecho Tributario'),
-    ('divorcios', 'Divorcios'),
-    ('herencias', 'Herencias y Sucesiones'),
-    ('immigration', 'Inmigración'),
-    ('insolvencia', 'Insolvencia y Quiebra'),
-    ('licitaciones', 'Licitaciones'),
-    ('propiedad-horizontal', 'Propiedad Horizontal'),
-    ('propiedad-intelectual', 'Propiedad Intelectual'),
-    ('seguros', 'Derecho de Seguros'),
-    ('sociedades', 'Derecho de Sociedades'),
+    ('accion-de-tutela', 'Acción de Tutela', 'Constitutional Protection (Tutela)'),
+    ('accion-de-cumplimiento', 'Acción de Cumplimiento', 'Compliance Action'),
+    ('acciones-de-grupo', 'Acciones de Grupo', 'Class Actions'),
+    ('acciones-populares', 'Acciones Populares', 'Public Interest Actions'),
+    ('acciones-electorales', 'Acciones Electorales', 'Electoral Law'),
+    ('acoso-laboral', 'Acoso Laboral', 'Workplace Harassment'),
+    ('adopciones', 'Adopciones', 'Adoptions'),
+    ('adquisiciones', 'Adquisiciones', 'Mergers & Acquisitions'),
+    ('aduanas', 'Aduanas', 'Customs Law'),
+    ('arbitraje', 'Arbitraje', 'Arbitration'),
+    ('asesoria', 'Asesoría Jurídica', 'Legal Advisory'),
+    ('auditorias', 'Auditorías', 'Audits'),
+    ('capitulaciones', 'Capitulaciones', 'Prenuptial Agreements'),
+    ('cobro-juridico', 'Cobro Jurídico', 'Debt Collection'),
+    ('comercio-electronico', 'Comercio Electrónico', 'E-Commerce Law'),
+    ('comercio-exterior', 'Comercio Exterior', 'International Trade'),
+    ('competencia', 'Derecho de Competencia', 'Competition Law'),
+    ('conciliaciones', 'Conciliaciones', 'Mediation & Conciliation'),
+    ('contencioso-administrativo', 'Contencioso Administrativo', 'Administrative Litigation'),
+    ('contratacion-publica', 'Contratación Pública', 'Public Procurement'),
+    ('contrato-arrendamiento', 'Contrato de Arrendamiento', 'Lease Agreements'),
+    ('contratos', 'Contratos', 'Contracts'),
+    ('contratos-de-trabajo', 'Contratos de Trabajo', 'Employment Contracts'),
+    ('derecho-administrativo', 'Derecho Administrativo', 'Administrative Law'),
+    ('derecho-civil', 'Derecho Civil', 'Civil Law'),
+    ('derecho-comercial', 'Derecho Comercial', 'Commercial Law'),
+    ('derecho-constitucional', 'Derecho Constitucional', 'Constitutional Law'),
+    ('derecho-de-familia', 'Derecho de Familia', 'Family Law'),
+    ('derecho-laboral', 'Derecho Laboral', 'Labour Law'),
+    ('derecho-penal', 'Derecho Penal', 'Criminal Law'),
+    ('derecho-tributario', 'Derecho Tributario', 'Tax Law'),
+    ('divorcios', 'Divorcios', 'Divorce'),
+    ('herencias', 'Herencias y Sucesiones', 'Inheritance & Estates'),
+    ('immigration', 'Inmigración', 'Immigration'),
+    ('insolvencia', 'Insolvencia y Quiebra', 'Insolvency & Bankruptcy'),
+    ('licitaciones', 'Licitaciones', 'Public Tenders'),
+    ('propiedad-horizontal', 'Propiedad Horizontal', 'Condominium Law'),
+    ('propiedad-intelectual', 'Propiedad Intelectual', 'Intellectual Property'),
+    ('seguros', 'Derecho de Seguros', 'Insurance Law'),
+    ('sociedades', 'Derecho de Sociedades', 'Corporate Law'),
 ]
 
 def _load_legacy_slugs():
@@ -126,9 +126,12 @@ def seed():
         print(f"Cities: {City.query.count()}")
 
         # Specialties
-        for slug, name in SPECIALTIES:
-            if not Specialty.query.filter_by(slug=slug).first():
-                db.session.add(Specialty(slug=slug, name=name))
+        for slug, name, name_en in SPECIALTIES:
+            existing = Specialty.query.filter_by(slug=slug).first()
+            if existing:
+                existing.name_en = name_en
+            else:
+                db.session.add(Specialty(slug=slug, name=name, name_en=name_en))
         db.session.commit()
         print(f"Specialties: {Specialty.query.count()}")
 

@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Lawyers — ' + specialty.name if lang=='en' else 'Abogados en ' + specialty.name }} — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Lawyers — ' + spec_name(specialty) if lang=='en' else 'Abogados en ' + spec_name(specialty) }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ 'Home' if lang=='en' else 'Inicio' }}</a></li>
-            <li class="breadcrumb-item active">{{ specialty.name }}</li>
+            <li class="breadcrumb-item active">{{ spec_name(specialty) }}</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between align-items-start mb-4">
-        <h1 class="h3 fw-bold">{{ 'Lawyers — ' + specialty.name if lang=='en' else 'Abogados en ' + specialty.name }}</h1>
+        <h1 class="h3 fw-bold">{{ 'Lawyers — ' + spec_name(specialty) if lang=='en' else 'Abogados en ' + spec_name(specialty) }}</h1>
         <select class="form-select w-auto" onchange="window.location='?ciudad='+this.value">
             <option value="">{{ 'All cities' if lang=='en' else 'Todas las ciudades' }}</option>
             {% for city in cities %}

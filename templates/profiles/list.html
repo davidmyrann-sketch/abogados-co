@@ -22,7 +22,7 @@
                             <select name="especialidad" class="form-select form-select-sm">
                                 <option value="">{{ 'All' if lang=='en' else 'Todas' }}</option>
                                 {% for s in specialties %}
-                                <option value="{{ s.slug }}">{{ s.name }}</option>
+                                <option value="{{ s.slug }}">{{ spec_name(s) }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
                             {% if profile.specialties %}
-                            <div class="mb-2">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>
+                            <div class="mb-2">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ spec_name(s) }}</span>{% endfor %}</div>
                             {% endif %}
                         </div>
                         <div class="card-footer bg-transparent border-0 pt-0">
