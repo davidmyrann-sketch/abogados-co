@@ -102,37 +102,15 @@ SPECIALTIES = [
     ('sociedades', 'Derecho de Sociedades'),
 ]
 
-LEGACY_SLUGS = [
-    "25-m-abogados-sas","7pilares-alianza-juridica-estrategica","a-c-consultores-juridicos-y-empresariales-sas",
-    "a-catalina-diaz-c","aan-abogados-y-asesorias-en-medio-ambiente-inmigracion-y-derecho-privado",
-    "abetcol","abetcol-sa","abg-carlos-daniel-martinez-mora","abogada-danny-lorena-giraldo-gomez",
-    "abogada-gestiones-juridicas-sas","abogada-gloria-zapata","abogada-jessica-zapata",
-    "abogada-lucila-ocampo-ariza","abogada-luz-dary-castillo","abogada-maria-fernanda-leal",
-    "abogada-maudy-tovar-cordoba","abogada-monica-elisa-paz-castro","abogada-monica-paz",
-    "abogada-monica-paz-online","abogada-natalia-cardozo","abogados-abesco-de-colombia-sas",
-    "abogados-asociados-legales","abogados-asociados-total-juridica","abogados-consultores-ac-sas",
-    "abogados-hackers","abogados-penalistas-bogota","abogados-penalistas-consultores",
-    "ac-abogados-y-consultorias","advocatus","ag-abogados",
-    "alejandro-restrepo-zuluaga-abogados-consultores","alexander-jimenez-cuartas-abogado",
-    "alexander-silva-pineda-abogado","alfredo-moreno-davila",
-    "alianza-consultores-y-tributaristas-sas","alianza-juridica","alvarez-redondo",
-    "alvaro-pinzon-guarin-abogados","amadeo-ceron-abogados",
-    "ana-maria-vergara-consultorias-juridicas-sas","andrea-cubillos-hernandez",
-    "andres-eraso-burbano-juristas-consultores-asociados","ar-abogados-asociados",
-    "ar-juridica-especializada","aranguren-calle-y-asociados-abogados","araujo-ibarra",
-    "arias-y-aristizabal-abogados-asesores","ariza-soto-asociados-abogados-consultores",
-    "arroyave-asociados-consultores-sas","asistencia-juridica-moderna-ddt-sas",
-    "asistencia-legal","atenttia","augusto-rico-consultorias",
-    "bona-fides-consultores","brigard-y-castro","bufete-de-abogados-consultores",
-    "caballero-gomez-palacios","cardona-ocampo","carolina-ramos-y-abogados",
-    "castellanos-y-co","castrillon-cardenas-abogados-consultores","cavelier-abogados",
-    "cc-abogados-y-gestores-inmobiliarios","chb-abogado","click-abogados-asociados",
-    "cm-abogados-asociados","cng-abogados-consultores-sas","colmenares-torres-abogados-asociados",
-    "colombia-legal-advisors","con-justicia-y-equidad","consocial-consultores-limitada",
-    "consorcio-borrero-martin-asociados-sas","consuelo-jaramillo-de-olarte",
-    "consultorias-y-asesorias-especializadas","cartagena-legal-asesorias-legales-y-soluciones",
-    "gestionamos","servijuridica","cc-corporacion","abogados-asociados-legales",
-]
+def _load_legacy_slugs():
+    import os
+    slugs_file = os.path.join(os.path.dirname(__file__), 'legacy_slugs.txt')
+    if os.path.exists(slugs_file):
+        with open(slugs_file) as f:
+            return [line.strip() for line in f if line.strip()]
+    return []
+
+LEGACY_SLUGS = _load_legacy_slugs()
 
 
 def seed():

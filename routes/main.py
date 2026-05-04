@@ -1,7 +1,17 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from models import db, Profile, City, Specialty
 
 main_bp = Blueprint('main', __name__)
+
+@main_bp.context_processor
+def inject_lang():
+    return {'lang': session.get('lang', 'es')}
+
+@main_bp.route('/lang/<lang>')
+def set_lang(lang):
+    if lang in ('en', 'es'):
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('main.index'))
 
 @main_bp.route('/')
 def index():

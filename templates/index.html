@@ -5,15 +5,19 @@
 <!-- Hero -->
 <section class="hero-section bg-primary text-white py-5">
     <div class="container text-center">
-        <h1 class="display-5 fw-bold mb-3">Encuentra el abogado que necesitas</h1>
-        <p class="lead mb-4">Más de {{ total_profiles }} abogados y bufetes jurídicos en todo Colombia</p>
+        <h1 class="display-5 fw-bold mb-3">
+            {{ 'Find the right lawyer in Colombia' if lang=='en' else 'Encuentra el abogado que necesitas' }}
+        </h1>
+        <p class="lead mb-4">
+            {{ 'Over ' + total_profiles|string + ' lawyers and law firms across Colombia' if lang=='en' else 'Más de ' + total_profiles|string + ' abogados y bufetes jurídicos en todo Colombia' }}
+        </p>
         <form action="{{ url_for('main.search') }}" method="GET" class="row g-2 justify-content-center">
             <div class="col-md-4">
-                <input type="text" name="q" class="form-control form-control-lg" placeholder="Nombre del abogado o bufete...">
+                <input type="text" name="q" class="form-control form-control-lg" placeholder="{{ 'Lawyer or firm name...' if lang=='en' else 'Nombre del abogado o bufete...' }}">
             </div>
             <div class="col-md-3">
                 <select name="ciudad" class="form-select form-select-lg">
-                    <option value="">Todas las ciudades</option>
+                    <option value="">{{ 'All cities' if lang=='en' else 'Todas las ciudades' }}</option>
                     {% for city in cities %}
                     <option value="{{ city.slug }}">{{ city.name }}</option>
                     {% endfor %}
@@ -21,7 +25,7 @@
             </div>
             <div class="col-md-3">
                 <select name="especialidad" class="form-select form-select-lg">
-                    <option value="">Todas las especialidades</option>
+                    <option value="">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</option>
                     {% for spec in specialties %}
                     <option value="{{ spec.slug }}">{{ spec.name }}</option>
                     {% endfor %}
@@ -29,7 +33,7 @@
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
-                    <i class="fas fa-search"></i> Buscar
+                    <i class="fas fa-search"></i> {{ 'Search' if lang=='en' else 'Buscar' }}
                 </button>
             </div>
         </form>
@@ -41,8 +45,8 @@
 <section class="py-5">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h4 fw-bold mb-0"><i class="fas fa-star text-warning me-2"></i>Abogados Destacados</h2>
-            <a href="{{ url_for('profiles.list_profiles') }}" class="btn btn-outline-primary btn-sm">Ver todos</a>
+            <h2 class="h4 fw-bold mb-0"><i class="fas fa-star text-warning me-2"></i>{{ 'Featured Lawyers' if lang=='en' else 'Abogados Destacados' }}</h2>
+            <a href="{{ url_for('profiles.list_profiles') }}" class="btn btn-outline-primary btn-sm">{{ 'View all' if lang=='en' else 'Ver todos' }}</a>
         </div>
         <div class="row g-4">
             {% for profile in featured %}
@@ -87,7 +91,7 @@
 <!-- Browse by City -->
 <section class="py-4 bg-light">
     <div class="container">
-        <h2 class="h4 fw-bold mb-4"><i class="fas fa-city me-2 text-primary"></i>Buscar por ciudad</h2>
+        <h2 class="h4 fw-bold mb-4"><i class="fas fa-city me-2 text-primary"></i>{{ 'Browse by city' if lang=='en' else 'Buscar por ciudad' }}</h2>
         <div class="row g-2">
             {% set main_cities = ['bogota', 'medellin', 'cali', 'barranquilla', 'cartagena-de-indias', 'bucaramanga', 'pereira', 'manizales', 'cucuta', 'ibague', 'neiva', 'santa-marta', 'villavicencio', 'armenia', 'pasto', 'monteria', 'popayan'] %}
             {% for city in cities %}
@@ -104,7 +108,7 @@
 <!-- Browse by Specialty -->
 <section class="py-4">
     <div class="container">
-        <h2 class="h4 fw-bold mb-4"><i class="fas fa-gavel me-2 text-primary"></i>Especialidades</h2>
+        <h2 class="h4 fw-bold mb-4"><i class="fas fa-gavel me-2 text-primary"></i>{{ 'Practice areas' if lang=='en' else 'Especialidades' }}</h2>
         <div class="row g-2">
             {% for spec in specialties[:18] %}
             <div class="col-6 col-md-4 col-lg-3">
@@ -120,40 +124,40 @@
 <!-- CTA for lawyers -->
 <section class="py-5 bg-primary text-white text-center">
     <div class="container">
-        <h2 class="h3 fw-bold mb-3">¿Eres abogado? Publica tu perfil</h2>
-        <p class="mb-4">Llega a miles de personas que buscan asesoría legal en Colombia cada mes.</p>
+        <h2 class="h3 fw-bold mb-3">{{ 'Are you a lawyer? List your firm' if lang=='en' else '¿Eres abogado? Publica tu perfil' }}</h2>
+        <p class="mb-4">{{ 'Reach thousands of people looking for legal advice in Colombia every month.' if lang=='en' else 'Llega a miles de personas que buscan asesoría legal en Colombia cada mes.' }}</p>
         <div class="row justify-content-center g-3">
             <div class="col-md-3">
                 <div class="card text-dark h-100">
                     <div class="card-body text-center">
-                        <h5 class="fw-bold">Básico</h5>
-                        <div class="display-6 fw-bold text-primary">$5<small class="fs-6">/mes</small></div>
-                        <p class="small text-muted">Perfil básico con tus datos</p>
+                        <h5 class="fw-bold">{{ 'Basic' if lang=='en' else 'Básico' }}</h5>
+                        <div class="display-6 fw-bold text-primary">$5<small class="fs-6">/{{ 'mo' if lang=='en' else 'mes' }}</small></div>
+                        <p class="small text-muted">{{ 'Basic profile with your details' if lang=='en' else 'Perfil básico con tus datos' }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card text-dark h-100 border-primary">
                     <div class="card-body text-center">
-                        <h5 class="fw-bold">Profesional</h5>
-                        <div class="display-6 fw-bold text-primary">$20<small class="fs-6">/mes</small></div>
-                        <p class="small text-muted">Mayor visibilidad en tu especialidad</p>
+                        <h5 class="fw-bold">{{ 'Professional' if lang=='en' else 'Profesional' }}</h5>
+                        <div class="display-6 fw-bold text-primary">$20<small class="fs-6">/{{ 'mo' if lang=='en' else 'mes' }}</small></div>
+                        <p class="small text-muted">{{ 'Higher visibility in your practice area' if lang=='en' else 'Mayor visibilidad en tu especialidad' }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card text-dark h-100 border-warning">
                     <div class="card-body text-center">
-                        <span class="badge bg-warning text-dark mb-1">Recomendado</span>
+                        <span class="badge bg-warning text-dark mb-1">{{ 'Recommended' if lang=='en' else 'Recomendado' }}</span>
                         <h5 class="fw-bold">Premium</h5>
-                        <div class="display-6 fw-bold text-warning">$35<small class="fs-6">/mes</small></div>
-                        <p class="small text-muted">Portada + posición prioritaria</p>
+                        <div class="display-6 fw-bold text-warning">$35<small class="fs-6">/{{ 'mo' if lang=='en' else 'mes' }}</small></div>
+                        <p class="small text-muted">{{ 'Homepage + top placement' if lang=='en' else 'Portada + posición prioritaria' }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <p class="mt-3 small opacity-75">Tarifa de apertura única: $100 USD (incluye primer mes)</p>
-        <a href="{{ url_for('profiles.new_profile') }}" class="btn btn-warning btn-lg mt-2 fw-bold">Publicar mi perfil</a>
+        <p class="mt-3 small opacity-75">{{ 'One-time opening fee: $100 USD (includes first month)' if lang=='en' else 'Tarifa de apertura única: $100 USD (incluye primer mes)' }}</p>
+        <a href="{{ url_for('profiles.new_profile') }}" class="btn btn-warning btn-lg mt-2 fw-bold">{{ 'List my firm' if lang=='en' else 'Publicar mi perfil' }}</a>
     </div>
 </section>
 {% endblock %}

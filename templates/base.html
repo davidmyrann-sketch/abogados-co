@@ -21,22 +21,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.list_profiles') }}">Abogados</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.search') }}">Buscar</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">Quiénes somos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.faq') }}">Preguntas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.list_profiles') }}">{{ 'Lawyers' if lang=='en' else 'Abogados' }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.search') }}">{{ 'Search' if lang=='en' else 'Buscar' }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}">{{ 'About' if lang=='en' else 'Quiénes somos' }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.faq') }}">{{ 'FAQ' if lang=='en' else 'Preguntas' }}</a></li>
             </ul>
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}"><i class="fas fa-cog"></i> Admin</a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.my_profile') }}"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Salir</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.my_profile') }}"><i class="fas fa-user"></i> {{ 'My Profile' if lang=='en' else 'Mi Perfil' }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">{{ 'Logout' if lang=='en' else 'Salir' }}</a></li>
                 {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-warning text-dark px-3 ms-2 fw-semibold" href="{{ url_for('profiles.new_profile') }}">Publicar perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ 'Login' if lang=='en' else 'Iniciar sesión' }}</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-warning text-dark px-3 ms-2 fw-semibold" href="{{ url_for('profiles.new_profile') }}">{{ 'List your firm' if lang=='en' else 'Publicar perfil' }}</a></li>
                 {% endif %}
+                <li class="nav-item ms-2">
+                    <a class="nav-link px-2 {% if lang=='es' %}fw-bold{% endif %}" href="{{ url_for('main.set_lang', lang='es') }}">ES</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 {% if lang=='en' %}fw-bold{% endif %}" href="{{ url_for('main.set_lang', lang='en') }}">EN</a>
+                </li>
             </ul>
         </div>
     </div>

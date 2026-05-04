@@ -44,6 +44,12 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(payments_bp)
 
+    from flask import session as flask_session
+
+    @app.context_processor
+    def inject_lang():
+        return {'lang': flask_session.get('lang', 'es')}
+
     return app
 
 app = create_app()
