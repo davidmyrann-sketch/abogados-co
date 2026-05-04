@@ -1,29 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Iniciar sesión — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Log in' if lang=='en' else 'Iniciar sesión' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card border-0 shadow">
                 <div class="card-body p-5">
-                    <h2 class="fw-bold text-center mb-4">Iniciar sesión</h2>
+                    <h2 class="fw-bold text-center mb-4">{{ 'Log in' if lang=='en' else 'Iniciar sesión' }}</h2>
                     <form method="POST">
                         <div class="mb-3">
-                            <label class="form-label">Correo electrónico</label>
+                            <label class="form-label">{{ 'Email address' if lang=='en' else 'Correo electrónico' }}</label>
                             <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
+                            <label class="form-label">{{ 'Password' if lang=='en' else 'Contraseña' }}</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">Recordarme</label>
+                            <label class="form-check-label" for="remember">{{ 'Remember me' if lang=='en' else 'Recordarme' }}</label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">Entrar</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">{{ 'Sign in' if lang=='en' else 'Entrar' }}</button>
                     </form>
                     <hr>
-                    <p class="text-center text-muted small">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate</a></p>
+                    <p class="text-center text-muted small">{{ "Don't have an account?" if lang=='en' else '¿No tienes cuenta?' }} <a href="{{ url_for('auth.register') }}">{{ 'Sign up' if lang=='en' else 'Regístrate' }}</a></p>
                 </div>
             </div>
         </div>

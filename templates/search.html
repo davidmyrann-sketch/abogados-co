@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Buscar abogados — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Search lawyers' if lang=='en' else 'Buscar abogados' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-4">
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <form method="GET" class="row g-2">
                 <div class="col-md-4">
-                    <input type="text" name="q" class="form-control" placeholder="Nombre..." value="{{ q }}">
+                    <input type="text" name="q" class="form-control" placeholder="{{ 'Name...' if lang=='en' else 'Nombre...' }}" value="{{ q }}">
                 </div>
                 <div class="col-md-3">
                     <select name="ciudad" class="form-select">
-                        <option value="">Todas las ciudades</option>
+                        <option value="">{{ 'All cities' if lang=='en' else 'Todas las ciudades' }}</option>
                         {% for city in cities %}
                         <option value="{{ city.slug }}" {% if city.slug == city_slug %}selected{% endif %}>{{ city.name }}</option>
                         {% endfor %}
@@ -18,21 +18,21 @@
                 </div>
                 <div class="col-md-3">
                     <select name="especialidad" class="form-select">
-                        <option value="">Todas las especialidades</option>
+                        <option value="">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</option>
                         {% for s in specialties %}
                         <option value="{{ s.slug }}" {% if s.slug == specialty_slug %}selected{% endif %}>{{ s.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                    <button type="submit" class="btn btn-primary w-100">{{ 'Search' if lang=='en' else 'Buscar' }}</button>
                 </div>
             </form>
         </div>
     </div>
 
     <div class="d-flex justify-content-between mb-3">
-        <h5 class="fw-bold mb-0">{{ profiles.total }} resultado{{ 's' if profiles.total != 1 }}</h5>
+        <h5 class="fw-bold mb-0">{{ profiles.total }} {{ 'result' + ('s' if profiles.total != 1 else '') if lang=='en' else 'resultado' + ('s' if profiles.total != 1 else '') }}</h5>
     </div>
 
     <div class="row g-3">
@@ -54,14 +54,14 @@
                     {% if profile.specialties %}<div>{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ s.name }}</span>{% endfor %}</div>{% endif %}
                 </div>
                 <div class="card-footer bg-transparent border-0">
-                    <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">Ver perfil</a>
+                    <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">{{ 'View profile' if lang=='en' else 'Ver perfil' }}</a>
                 </div>
             </div>
         </div>
         {% else %}
         <div class="col-12 text-center py-5">
             <i class="fas fa-search fa-3x text-muted mb-3"></i>
-            <p class="text-muted">No se encontraron resultados para tu búsqueda.</p>
+            <p class="text-muted">{{ 'No results found for your search.' if lang=='en' else 'No se encontraron resultados para tu búsqueda.' }}</p>
         </div>
         {% endfor %}
     </div>

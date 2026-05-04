@@ -1,40 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Abogados en Colombia — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Lawyers in Colombia' if lang=='en' else 'Abogados en Colombia' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-4">
     <div class="row">
         <div class="col-md-3 mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3">Filtrar</h6>
+                    <h6 class="fw-bold mb-3">{{ 'Filter' if lang=='en' else 'Filtrar' }}</h6>
                     <form method="GET" action="{{ url_for('main.search') }}">
                         <div class="mb-3">
-                            <label class="form-label small">Ciudad</label>
+                            <label class="form-label small">{{ 'City' if lang=='en' else 'Ciudad' }}</label>
                             <select name="ciudad" class="form-select form-select-sm">
-                                <option value="">Todas</option>
+                                <option value="">{{ 'All' if lang=='en' else 'Todas' }}</option>
                                 {% for city in cities %}
                                 <option value="{{ city.slug }}">{{ city.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small">Especialidad</label>
+                            <label class="form-label small">{{ 'Specialty' if lang=='en' else 'Especialidad' }}</label>
                             <select name="especialidad" class="form-select form-select-sm">
-                                <option value="">Todas</option>
+                                <option value="">{{ 'All' if lang=='en' else 'Todas' }}</option>
                                 {% for s in specialties %}
                                 <option value="{{ s.slug }}">{{ s.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100">Filtrar</button>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">{{ 'Filter' if lang=='en' else 'Filtrar' }}</button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h1 class="h4 fw-bold mb-0">Abogados en Colombia</h1>
-                <span class="text-muted small">{{ profiles.total }} resultados</span>
+                <h1 class="h4 fw-bold mb-0">{{ 'Lawyers in Colombia' if lang=='en' else 'Abogados en Colombia' }}</h1>
+                <span class="text-muted small">{{ profiles.total }} {{ 'results' if lang=='en' else 'resultados' }}</span>
             </div>
             <div class="row g-3">
                 {% for profile in profiles.items %}
@@ -59,12 +59,12 @@
                             {% endif %}
                         </div>
                         <div class="card-footer bg-transparent border-0 pt-0">
-                            <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">Ver perfil</a>
+                            <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">{{ 'View profile' if lang=='en' else 'Ver perfil' }}</a>
                         </div>
                     </div>
                 </div>
                 {% else %}
-                <div class="col-12"><p class="text-muted">No hay perfiles activos aún.</p></div>
+                <div class="col-12"><p class="text-muted">{{ 'No active profiles yet.' if lang=='en' else 'No hay perfiles activos aún.' }}</p></div>
                 {% endfor %}
             </div>
             {% if profiles.pages > 1 %}

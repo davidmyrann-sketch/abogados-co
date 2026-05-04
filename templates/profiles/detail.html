@@ -6,8 +6,8 @@
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('profiles.list_profiles') }}">Abogados</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ 'Home' if lang=='en' else 'Inicio' }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('profiles.list_profiles') }}">{{ 'Lawyers' if lang=='en' else 'Abogados' }}</a></li>
             {% if profile.city_rel %}
             <li class="breadcrumb-item"><a href="{{ url_for('profiles.by_city', slug=profile.city_rel.slug) }}">{{ profile.city_rel.name }}</a></li>
             {% endif %}
@@ -47,7 +47,7 @@
                     {% endif %}
 
                     {% if profile.description %}
-                    <h5 class="fw-bold">Sobre nosotros</h5>
+                    <h5 class="fw-bold">{{ 'About us' if lang=='en' else 'Sobre nosotros' }}</h5>
                     <p>{{ profile.description }}</p>
                     {% endif %}
                 </div>
@@ -56,7 +56,7 @@
             {% if profile.images|length > 1 %}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
-                    <h5 class="fw-bold mb-3">Galería</h5>
+                    <h5 class="fw-bold mb-3">{{ 'Gallery' if lang=='en' else 'Galería' }}</h5>
                     <div class="row g-2">
                         {% for img in profile.images %}
                         <div class="col-4">
@@ -72,7 +72,7 @@
         <div class="col-md-4">
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">
-                    <h5 class="fw-bold mb-3">Contacto</h5>
+                    <h5 class="fw-bold mb-3">{{ 'Contact' if lang=='en' else 'Contacto' }}</h5>
                     {% if profile.phone %}
                     <p><i class="fas fa-phone text-primary me-2"></i><a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></p>
                     {% endif %}
@@ -80,13 +80,13 @@
                     <p><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>
                     {% endif %}
                     {% if profile.website %}
-                    <p><i class="fas fa-globe text-primary me-2"></i><a href="{{ profile.website }}" target="_blank" rel="noopener">Sitio web</a></p>
+                    <p><i class="fas fa-globe text-primary me-2"></i><a href="{{ profile.website }}" target="_blank" rel="noopener">{{ 'Website' if lang=='en' else 'Sitio web' }}</a></p>
                     {% endif %}
                     {% if profile.address %}
                     <p><i class="fas fa-map-marker-alt text-primary me-2"></i>{{ profile.address }}</p>
                     {% endif %}
                     {% if not profile.phone and not profile.email %}
-                    <p class="text-muted small">No hay datos de contacto disponibles.</p>
+                    <p class="text-muted small">{{ 'No contact information available.' if lang=='en' else 'No hay datos de contacto disponibles.' }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -94,10 +94,10 @@
             {% if current_user.is_authenticated and (current_user.id == profile.user_id or current_user.is_admin) %}
             <div class="card border-warning mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold">Gestionar perfil</h6>
-                    <a href="{{ url_for('profiles.my_profile') }}" class="btn btn-warning btn-sm w-100 mb-2">Editar perfil</a>
-                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('¿Seguro que deseas eliminar tu perfil?')">
-                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Eliminar perfil</button>
+                    <h6 class="fw-bold">{{ 'Manage profile' if lang=='en' else 'Gestionar perfil' }}</h6>
+                    <a href="{{ url_for('profiles.my_profile') }}" class="btn btn-warning btn-sm w-100 mb-2">{{ 'Edit profile' if lang=='en' else 'Editar perfil' }}</a>
+                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('{{ 'Are you sure you want to delete your profile?' if lang=='en' else '¿Seguro que deseas eliminar tu perfil?' }}')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">{{ 'Delete profile' if lang=='en' else 'Eliminar perfil' }}</button>
                     </form>
                 </div>
             </div>
@@ -107,14 +107,14 @@
 
     {% if related %}
     <hr>
-    <h5 class="fw-bold mb-3">Otros abogados en {{ profile.city_rel.name if profile.city_rel else 'Colombia' }}</h5>
+    <h5 class="fw-bold mb-3">{{ ('Other lawyers in ' + (profile.city_rel.name if profile.city_rel else 'Colombia')) if lang=='en' else ('Otros abogados en ' + (profile.city_rel.name if profile.city_rel else 'Colombia')) }}</h5>
     <div class="row g-3">
         {% for p in related %}
         <div class="col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body text-center">
                     <div class="fw-semibold small">{{ p.name }}</div>
-                    <a href="{{ url_for('profiles.profile_detail', slug=p.slug) }}" class="btn btn-outline-primary btn-sm mt-2">Ver</a>
+                    <a href="{{ url_for('profiles.profile_detail', slug=p.slug) }}" class="btn btn-outline-primary btn-sm mt-2">{{ 'View' if lang=='en' else 'Ver' }}</a>
                 </div>
             </div>
         </div>

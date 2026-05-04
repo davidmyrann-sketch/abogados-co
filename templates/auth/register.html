@@ -1,29 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Crear cuenta — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Create account' if lang=='en' else 'Crear cuenta' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card border-0 shadow">
                 <div class="card-body p-5">
-                    <h2 class="fw-bold text-center mb-4">Crear cuenta</h2>
+                    <h2 class="fw-bold text-center mb-4">{{ 'Create account' if lang=='en' else 'Crear cuenta' }}</h2>
                     <form method="POST">
                         <div class="mb-3">
-                            <label class="form-label">Nombre completo</label>
+                            <label class="form-label">{{ 'Full name' if lang=='en' else 'Nombre completo' }}</label>
                             <input type="text" name="full_name" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Correo electrónico</label>
+                            <label class="form-label">{{ 'Email address' if lang=='en' else 'Correo electrónico' }}</label>
                             <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Contraseña (mínimo 8 caracteres)</label>
+                            <label class="form-label">{{ 'Password (minimum 8 characters)' if lang=='en' else 'Contraseña (mínimo 8 caracteres)' }}</label>
                             <input type="password" name="password" class="form-control" minlength="8" required>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">Crear cuenta</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">{{ 'Create account' if lang=='en' else 'Crear cuenta' }}</button>
                     </form>
                     <hr>
-                    <p class="text-center text-muted small">¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></p>
+                    <p class="text-center text-muted small">{{ 'Already have an account?' if lang=='en' else '¿Ya tienes cuenta?' }} <a href="{{ url_for('auth.login') }}">{{ 'Sign in' if lang=='en' else 'Inicia sesión' }}</a></p>
                 </div>
             </div>
         </div>

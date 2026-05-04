@@ -1,23 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Solicitud recibida — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Request received' if lang=='en' else 'Solicitud recibida' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
             <i class="fas fa-clock text-warning fa-4x mb-3"></i>
-            <h2 class="fw-bold">Solicitud recibida</h2>
-            <p class="text-muted">Tu solicitud para <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> ha sido registrada.</p>
+            <h2 class="fw-bold">{{ 'Request received' if lang=='en' else 'Solicitud recibida' }}</h2>
+            <p class="text-muted">{{ 'Your request for' if lang=='en' else 'Tu solicitud para' }} <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'has been registered.' if lang=='en' else 'ha sido registrada.' }}</p>
             <div class="card border-0 shadow-sm mt-4 text-start">
                 <div class="card-body">
-                    <h6 class="fw-bold">Para activar tu perfil, realiza el pago de <span class="text-primary">${{ opening_fee }} USD</span></h6>
-                    <p class="small text-muted mb-2">Plan elegido: <strong>{{ tier|capitalize }} (${{ tier_price }}/mes desde el mes 2)</strong></p>
-                    <p class="small">Transfiere a: <strong>davidmyrann@gmail.com</strong> (PayPal o transferencia bancaria)</p>
-                    <p class="small">Incluye en el concepto: <code>{{ profile.slug }}</code></p>
+                    <h6 class="fw-bold">{{ 'To activate your profile, send a payment of' if lang=='en' else 'Para activar tu perfil, realiza el pago de' }} <span class="text-primary">${{ opening_fee }} USD</span></h6>
+                    <p class="small text-muted mb-2">{{ 'Chosen plan:' if lang=='en' else 'Plan elegido:' }} <strong>{{ tier|capitalize }} (${{ tier_price }}/{{ 'mo from month 2' if lang=='en' else 'mes desde el mes 2' }})</strong></p>
+                    <p class="small">{{ 'Transfer to:' if lang=='en' else 'Transfiere a:' }} <strong>davidmyrann@gmail.com</strong> (PayPal)</p>
+                    <p class="small">{{ 'Include in the reference:' if lang=='en' else 'Incluye en el concepto:' }} <code>{{ profile.slug }}</code></p>
                     <hr>
-                    <p class="small text-muted">Tu perfil será activado en menos de 24 horas tras confirmar el pago.</p>
+                    <p class="small text-muted">{{ 'Your profile will be activated within 24 hours of confirming payment.' if lang=='en' else 'Tu perfil será activado en menos de 24 horas tras confirmar el pago.' }}</p>
                 </div>
             </div>
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-3">Volver al inicio</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-3">{{ 'Back to home' if lang=='en' else 'Volver al inicio' }}</a>
         </div>
     </div>
 </div>

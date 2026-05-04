@@ -1,41 +1,41 @@
 {% extends "base.html" %}
-{% block title %}Publicar perfil — Abogados.com.co{% endblock %}
+{% block title %}{{ 'List your firm' if lang=='en' else 'Publicar perfil' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <h2 class="fw-bold mb-4 text-center">Crea tu perfil de abogado</h2>
+            <h2 class="fw-bold mb-4 text-center">{{ 'Create your lawyer profile' if lang=='en' else 'Crea tu perfil de abogado' }}</h2>
             <div class="card border-0 shadow">
                 <div class="card-body p-4">
                     <form method="POST">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Nombre del bufete o abogado *</label>
-                            <input type="text" name="name" class="form-control" required placeholder="Ej: García & Asociados Abogados">
+                            <label class="form-label fw-semibold">{{ 'Firm or lawyer name *' if lang=='en' else 'Nombre del bufete o abogado *' }}</label>
+                            <input type="text" name="name" class="form-control" required placeholder="{{ 'e.g. García & Asociados' if lang=='en' else 'Ej: García & Asociados Abogados' }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Ciudad</label>
+                            <label class="form-label fw-semibold">{{ 'City' if lang=='en' else 'Ciudad' }}</label>
                             <select name="city_id" class="form-select">
-                                <option value="">Seleccionar ciudad</option>
+                                <option value="">{{ 'Select city' if lang=='en' else 'Seleccionar ciudad' }}</option>
                                 {% for city in cities %}
                                 <option value="{{ city.id }}">{{ city.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Email de contacto</label>
+                            <label class="form-label fw-semibold">{{ 'Contact email' if lang=='en' else 'Email de contacto' }}</label>
                             <input type="email" name="email" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Teléfono</label>
+                            <label class="form-label fw-semibold">{{ 'Phone' if lang=='en' else 'Teléfono' }}</label>
                             <input type="text" name="phone" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Descripción breve</label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="Cuéntanos sobre tu bufete..."></textarea>
+                            <label class="form-label fw-semibold">{{ 'Short description' if lang=='en' else 'Descripción breve' }}</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="{{ 'Tell us about your firm...' if lang=='en' else 'Cuéntanos sobre tu bufete...' }}"></textarea>
                         </div>
 
                         <hr>
-                        <h5 class="fw-bold mb-3">Elige tu plan (desde el mes 2)</h5>
+                        <h5 class="fw-bold mb-3">{{ 'Choose your plan (from month 2)' if lang=='en' else 'Elige tu plan (desde el mes 2)' }}</h5>
                         <div class="row g-3 mb-4">
                             {% for key, price in tiers.items() %}
                             <div class="col-md-4">
@@ -51,9 +51,9 @@
                         </div>
                         <div class="alert alert-info small">
                             <i class="fas fa-info-circle me-1"></i>
-                            <strong>Tarifa de apertura: ${{ opening_fee }} USD</strong> — incluye el primer mes completo.
+                            <strong>{{ 'Opening fee: $' + opening_fee|string + ' USD' if lang=='en' else 'Tarifa de apertura: $' + opening_fee|string + ' USD' }}</strong> — {{ 'includes the first full month.' if lang=='en' else 'incluye el primer mes completo.' }}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">Continuar al pago</button>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">{{ 'Continue to payment' if lang=='en' else 'Continuar al pago' }}</button>
                     </form>
                 </div>
             </div>

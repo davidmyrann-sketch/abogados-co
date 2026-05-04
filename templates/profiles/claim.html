@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Reclamar perfil — abogados.com.co/bufetes/{{ profile.slug }}{% endblock %}
+{% block title %}{{ 'Claim profile' if lang=='en' else 'Reclamar perfil' }} — abogados.com.co/bufetes/{{ profile.slug }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -9,17 +9,17 @@
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
                         <i class="fas fa-balance-scale fa-3x text-primary mb-3"></i>
-                        <h2 class="fw-bold">Esta URL te pertenecía</h2>
-                        <p class="text-muted">La dirección <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> estuvo activa hasta diciembre de 2025. Ahora puedes recuperarla.</p>
+                        <h2 class="fw-bold">{{ 'This URL was yours' if lang=='en' else 'Esta URL te pertenecía' }}</h2>
+                        <p class="text-muted">{{ 'The address' if lang=='en' else 'La dirección' }} <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'was active until December 2025. You can reclaim it now.' if lang=='en' else 'estuvo activa hasta diciembre de 2025. Ahora puedes recuperarla.' }}</p>
                     </div>
 
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        <strong>Tarifa de apertura: $100 USD</strong> — incluye el primer mes. A partir del mes 2, elige tu plan mensual.
+                        <strong>{{ 'Opening fee: $100 USD' if lang=='en' else 'Tarifa de apertura: $100 USD' }}</strong> — {{ 'includes the first month. From month 2, choose your monthly plan.' if lang=='en' else 'incluye el primer mes. A partir del mes 2, elige tu plan mensual.' }}
                     </div>
 
                     <form method="POST" action="{{ url_for('profiles.claim_profile', slug=profile.slug) }}">
-                        <h5 class="fw-bold mb-3">Elige tu plan mensual (desde el mes 2)</h5>
+                        <h5 class="fw-bold mb-3">{{ 'Choose your monthly plan (from month 2)' if lang=='en' else 'Elige tu plan mensual (desde el mes 2)' }}</h5>
                         <div class="row g-3 mb-4">
                             <div class="col-md-4">
                                 <div class="plan-card p-3 border rounded text-center">
@@ -68,10 +68,10 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg fw-bold">
-                                <i class="fas fa-lock-open me-2"></i>Recuperar mi URL — Pagar $100 USD
+                                <i class="fas fa-lock-open me-2"></i>{{ 'Claim my URL — Pay $100 USD' if lang=='en' else 'Recuperar mi URL — Pagar $100 USD' }}
                             </button>
                         </div>
-                        <p class="text-center text-muted small mt-2">Pago seguro · Puedes cancelar en cualquier momento</p>
+                        <p class="text-center text-muted small mt-2">{{ 'Secure payment · Cancel at any time' if lang=='en' else 'Pago seguro · Puedes cancelar en cualquier momento' }}</p>
                     </form>
                 </div>
             </div>
