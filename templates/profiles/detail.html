@@ -53,6 +53,35 @@
                 </div>
             </div>
 
+            {% if profile.services %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-gavel me-2 text-primary"></i>{{ 'Services & Fees' if lang=='en' else 'Servicios y honorarios' }}</h5>
+                    {% for svc in profile.services %}
+                    <div class="mb-4 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="fw-bold mb-1">{{ svc.title }}</h6>
+                            {% if svc.price_from or svc.price_to %}
+                            <span class="badge bg-light text-dark border ms-2 text-nowrap">
+                                {% if svc.price_from and svc.price_to %}
+                                    ${{ '{:,}'.format(svc.price_from) }} – ${{ '{:,}'.format(svc.price_to) }}
+                                {% elif svc.price_from %}
+                                    {{ 'From' if lang=='en' else 'Desde' }} ${{ '{:,}'.format(svc.price_from) }}
+                                {% else %}
+                                    {{ 'Up to' if lang=='en' else 'Hasta' }} ${{ '{:,}'.format(svc.price_to) }}
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if svc.description %}
+                        <p class="text-muted small mb-0">{{ svc.description }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
             {% if profile.images|length > 1 %}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
@@ -88,6 +117,30 @@
                     {% if not profile.phone and not profile.email %}
                     <p class="text-muted small">{{ 'No contact information available.' if lang=='en' else 'No hay datos de contacto disponibles.' }}</p>
                     {% endif %}
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-3 border-primary">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane me-2 text-primary"></i>{{ 'Contact this lawyer' if lang=='en' else 'Contactar abogado' }}</h5>
+                    <form method="POST" action="{{ url_for('profiles.send_contact', slug=profile.slug) }}">
+                        <div class="mb-2">
+                            <input type="text" name="sender_name" class="form-control form-control-sm" placeholder="{{ 'Your name *' if lang=='en' else 'Tu nombre *' }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" name="sender_email" class="form-control form-control-sm" placeholder="{{ 'Your email *' if lang=='en' else 'Tu correo *' }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="text" name="sender_phone" class="form-control form-control-sm" placeholder="{{ 'Phone' if lang=='en' else 'Teléfono' }}">
+                        </div>
+                        <div class="mb-3">
+                            <textarea name="body" class="form-control form-control-sm" rows="4" placeholder="{{ 'Briefly describe your case *' if lang=='en' else 'Describe brevemente tu caso *' }}" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">
+                            <i class="fas fa-paper-plane me-1"></i>{{ 'Send message' if lang=='en' else 'Enviar consulta' }}
+                        </button>
+                        <p class="text-muted text-center small mt-2 mb-0">{{ 'Free and confidential' if lang=='en' else 'Gratuito y confidencial' }}</p>
+                    </form>
                 </div>
             </div>
 

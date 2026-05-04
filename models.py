@@ -67,6 +67,11 @@ class Profile(db.Model):
                                   backref=db.backref('profiles', lazy=True))
     images = db.relationship('ProfileImage', backref='profile', lazy=True, cascade='all, delete-orphan')
     payments = db.relationship('Payment', backref='profile', lazy=True)
+    services = db.relationship('ProfileService', backref='profile', lazy=True,
+                               cascade='all, delete-orphan',
+                               order_by='ProfileService.sort_order')
+    messages = db.relationship('Message', backref='profile', lazy=True,
+                               cascade='all, delete-orphan')
 
 
 class ProfileImage(db.Model):
@@ -76,6 +81,32 @@ class ProfileImage(db.Model):
     url = db.Column(db.String(500), nullable=False)
     cloudinary_public_id = db.Column(db.String(255))
     is_primary = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ProfileService(db.Model):
+    __tablename__ = 'profile_services'
+    id = db.Column(db.Integer, primary_key=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    price_from = db.Column(db.Integer)
+    price_to = db.Column(db.Integer)
+    sort_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Message(db.Model):
+    __tablename__ = 'messages'
+    id = db.Column(db.Integer, primary_key=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
+    sender_name = db.Column(db.String(200), nullable=False)
+    sender_email = db.Column(db.String(200), nullable=False)
+    sender_phone = db.Column(db.String(50))
+    body = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    reply_text = db.Column(db.Text)
+    replied_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

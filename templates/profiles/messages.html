@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Inbox' if lang=='en' else 'Mensajes' }} — Abogados.com.co{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">{{ 'Inbox' if lang=='en' else 'Bandeja de entrada' }}</h2>
+        <a href="{{ url_for('profiles.my_profile') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>{{ 'Back to profile' if lang=='en' else 'Volver al perfil' }}
+        </a>
+    </div>
+
+    {% if not messages %}
+    <div class="text-center py-5 text-muted">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <p>{{ 'No messages yet. Share your profile to receive inquiries.' if lang=='en' else 'Aún no tienes mensajes. Comparte tu perfil para recibir consultas.' }}</p>
+    </div>
+    {% else %}
+    <div class="row g-3">
+        {% for msg in messages %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm {% if not msg.is_read %}border-start border-primary border-3{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="fw-bold">{{ msg.sender_name }}</span>
+                            {% if not msg.is_read %}<span class="badge bg-primary ms-2">{{ 'New' if lang=='en' else 'Nuevo' }}</span>{% endif %}
+                            <div class="text-muted small">
+                                <a href="mailto:{{ msg.sender_email }}">{{ msg.sender_email }}</a>
+                                {% if msg.sender_phone %} · {{ msg.sender_phone }}{% endif %}
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ msg.created_at.strftime('%d %b %Y, %H:%M') }}</small>
+                    </div>
+
+                    <p class="mb-3">{{ msg.body }}</p>
+
+                    {% if msg.reply_text %}
+                    <div class="bg-light rounded p-3 mb-3">
+                        <small class="text-muted fw-semibold">{{ 'Your reply' if lang=='en' else 'Tu respuesta' }} · {{ msg.replied_at.strftime('%d %b %Y') }}</small>
+                        <p class="mb-0 mt-1">{{ msg.reply_text }}</p>
+                    </div>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('profiles.reply_message', msg_id=msg.id) }}">
+                        <div class="input-group">
+                            <textarea name="reply_text" class="form-control form-control-sm" rows="2" placeholder="{{ 'Write your reply...' if lang=='en' else 'Escribe tu respuesta...' }}" required></textarea>
+                            <button type="submit" class="btn btn-primary btn-sm px-3">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">{{ 'The reply will be sent to' if lang=='en' else 'La respuesta se enviará a' }} {{ msg.sender_email }}</small>
+                    </form>
+                    {% if not msg.is_read %}
+                    <form method="POST" action="{{ url_for('profiles.mark_read', msg_id=msg.id) }}" class="mt-2">
+                        <button type="submit" class="btn btn-link btn-sm text-muted p-0">{{ 'Mark as read' if lang=='en' else 'Marcar como leído' }}</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

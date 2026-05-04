@@ -32,6 +32,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}"><i class="fas fa-cog"></i> Admin</a></li>
                     {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.my_profile') }}"><i class="fas fa-user"></i> {{ 'My Profile' if lang=='en' else 'Mi Perfil' }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profiles.my_messages') }}"><i class="fas fa-envelope"></i> {{ 'Inbox' if lang=='en' else 'Mensajes' }}{% if unread_count %} <span class="badge bg-warning text-dark">{{ unread_count }}</span>{% endif %}</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">{{ 'Logout' if lang=='en' else 'Salir' }}</a></li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{{ 'Login' if lang=='en' else 'Iniciar sesión' }}</a></li>

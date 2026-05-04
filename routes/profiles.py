@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session
 from flask_login import login_required, current_user
-from models import db, Profile, City, Specialty, ProfileImage, Payment
+from flask_mail import Message as MailMessage
+from models import db, Profile, City, Specialty, ProfileImage, Payment, ProfileService, Message
 from datetime import datetime, timedelta
 import cloudinary
 import cloudinary.uploader
@@ -257,8 +258,12 @@ def delete_profile():
     profile.website = None
     profile.address = None
     profile.specialties = []
-    for img in profile.images:
+    for img in list(profile.images):
         db.session.delete(img)
+    for svc in list(profile.services):
+        db.session.delete(svc)
+    for msg in list(profile.messages):
+        db.session.delete(msg)
 
     db.session.commit()
     flash('Tu perfil ha sido eliminado. La URL quedará disponible para otros abogados.', 'info')
@@ -277,6 +282,160 @@ def by_city(slug):
         )
     ).paginate(page=page, per_page=24, error_out=False)
     return render_template('profiles/by_city.html', city=city, profiles=profiles)
+
+
+@profiles_bp.route('/bufetes/<slug>/contacto', methods=['POST'])
+def send_contact(slug):
+    profile = Profile.query.filter_by(slug=slug, status='active').first_or_404()
+    sender_name = request.form.get('sender_name', '').strip()
+    sender_email = request.form.get('sender_email', '').strip()
+    sender_phone = request.form.get('sender_phone', '').strip()
+    body = request.form.get('body', '').strip()
+
+    if not sender_name or not sender_email or not body:
+        flash('Por favor completa todos los campos obligatorios.', 'danger')
+        return redirect(url_for('profiles.profile_detail', slug=slug))
+
+    msg = Message(
+        profile_id=profile.id,
+        sender_name=sender_name,
+        sender_email=sender_email,
+        sender_phone=sender_phone,
+        body=body
+    )
+    db.session.add(msg)
+    db.session.commit()
+
+    # Email notification to lawyer
+    lawyer_email = profile.email or profile.user.email if profile.user else None
+    if lawyer_email and current_app.config.get('MAIL_PASSWORD'):
+        try:
+            from app import mail
+            email_body = (
+                f"Nueva consulta en abogados.com.co / New inquiry on abogados.com.co\n\n"
+                f"De / From: {sender_name} <{sender_email}>\n"
+                f"Teléfono / Phone: {sender_phone or '—'}\n\n"
+                f"{body}\n\n"
+                f"---\nInicia sesión para responder / Log in to reply:\n"
+                f"{current_app.config['BASE_URL']}/mi-perfil/mensajes"
+            )
+            mail_msg = MailMessage(
+                subject=f"Nueva consulta — abogados.com.co",
+                recipients=[lawyer_email],
+                body=email_body
+            )
+            mail.send(mail_msg)
+        except Exception:
+            pass
+
+    lang = session.get('lang', 'es')
+    if lang == 'en':
+        flash('Your message has been sent. The lawyer will contact you shortly.', 'success')
+    else:
+        flash('Tu mensaje ha sido enviado. El abogado se pondrá en contacto contigo pronto.', 'success')
+    return redirect(url_for('profiles.profile_detail', slug=slug))
+
+
+@profiles_bp.route('/mi-perfil/servicios/agregar', methods=['POST'])
+@login_required
+def add_service():
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    title = request.form.get('title', '').strip()
+    description = request.form.get('description', '').strip()
+    price_from = request.form.get('price_from', '').strip()
+    price_to = request.form.get('price_to', '').strip()
+
+    if not title:
+        flash('El título del servicio es obligatorio.', 'danger')
+        return redirect(url_for('profiles.my_profile'))
+
+    svc = ProfileService(
+        profile_id=profile.id,
+        title=title,
+        description=description or None,
+        price_from=int(price_from) if price_from.isdigit() else None,
+        price_to=int(price_to) if price_to.isdigit() else None,
+        sort_order=len(profile.services)
+    )
+    db.session.add(svc)
+    db.session.commit()
+    flash('Servicio añadido.' if session.get('lang') != 'en' else 'Service added.', 'success')
+    return redirect(url_for('profiles.my_profile'))
+
+
+@profiles_bp.route('/mi-perfil/servicios/<int:service_id>/eliminar', methods=['POST'])
+@login_required
+def delete_service(service_id):
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    svc = ProfileService.query.get_or_404(service_id)
+    if svc.profile_id != profile.id:
+        abort(403)
+    db.session.delete(svc)
+    db.session.commit()
+    flash('Servicio eliminado.' if session.get('lang') != 'en' else 'Service removed.', 'success')
+    return redirect(url_for('profiles.my_profile'))
+
+
+@profiles_bp.route('/mi-perfil/mensajes')
+@login_required
+def my_messages():
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        return redirect(url_for('profiles.new_profile'))
+    msgs = Message.query.filter_by(profile_id=profile.id).order_by(Message.created_at.desc()).all()
+    return render_template('profiles/messages.html', messages=msgs, profile=profile)
+
+
+@profiles_bp.route('/mi-perfil/mensajes/<int:msg_id>/responder', methods=['POST'])
+@login_required
+def reply_message(msg_id):
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    msg = Message.query.get_or_404(msg_id)
+    if msg.profile_id != profile.id:
+        abort(403)
+
+    reply_text = request.form.get('reply_text', '').strip()
+    if not reply_text:
+        flash('La respuesta no puede estar vacía.', 'danger')
+        return redirect(url_for('profiles.my_messages'))
+
+    msg.reply_text = reply_text
+    msg.replied_at = datetime.utcnow()
+    msg.is_read = True
+    db.session.commit()
+
+    if current_app.config.get('MAIL_PASSWORD'):
+        try:
+            from app import mail
+            email_body = (
+                f"Hola {msg.sender_name},\n\n"
+                f"El abogado/bufete {profile.name} ha respondido a tu consulta en abogados.com.co:\n\n"
+                f"{reply_text}\n\n"
+                f"---\nabogados.com.co"
+            )
+            mail_msg = MailMessage(
+                subject=f"Respuesta de {profile.name} — abogados.com.co",
+                recipients=[msg.sender_email],
+                body=email_body
+            )
+            mail.send(mail_msg)
+        except Exception:
+            pass
+
+    flash('Respuesta enviada.' if session.get('lang') != 'en' else 'Reply sent.', 'success')
+    return redirect(url_for('profiles.my_messages'))
+
+
+@profiles_bp.route('/mi-perfil/mensajes/<int:msg_id>/leer', methods=['POST'])
+@login_required
+def mark_read(msg_id):
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    msg = Message.query.get_or_404(msg_id)
+    if msg.profile_id != profile.id:
+        abort(403)
+    msg.is_read = True
+    db.session.commit()
+    return redirect(url_for('profiles.my_messages'))
 
 
 @profiles_bp.route('/bufetes/especialidad/<slug>')

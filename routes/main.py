@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
-from models import db, Profile, City, Specialty
+from models import db, Profile, City, Specialty, ProfileService
 
 main_bp = Blueprint('main', __name__)
 
@@ -37,7 +37,12 @@ def search():
     query = Profile.query.filter_by(status='active')
 
     if q:
-        query = query.filter(Profile.name.ilike(f'%{q}%'))
+        query = query.filter(
+            db.or_(
+                Profile.name.ilike(f'%{q}%'),
+                Profile.services.any(ProfileService.title.ilike(f'%{q}%'))
+            )
+        )
     if city_slug:
         city = City.query.filter_by(slug=city_slug).first()
         if city:

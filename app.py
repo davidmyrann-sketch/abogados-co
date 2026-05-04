@@ -2,12 +2,15 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
+from flask_mail import Mail
 from models import db, User
 from routes.main import main_bp
 from routes.profiles import profiles_bp
 from routes.auth import auth_bp
 from routes.admin import admin_bp
 from routes.payments import payments_bp
+
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -26,8 +29,16 @@ def create_app():
     app.config['ADMIN_EMAIL'] = os.environ.get('ADMIN_EMAIL', 'davidmyrann@gmail.com')
     app.config['BASE_URL'] = os.environ.get('BASE_URL', 'http://localhost:5000')
 
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', '')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@abogados.com.co')
+
     db.init_app(app)
     Migrate(app, db)
+    mail.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -45,10 +56,17 @@ def create_app():
     app.register_blueprint(payments_bp)
 
     from flask import session as flask_session
+    from flask_login import current_user
 
     @app.context_processor
-    def inject_lang():
-        return {'lang': flask_session.get('lang', 'es')}
+    def inject_globals():
+        unread = 0
+        if current_user.is_authenticated:
+            from models import Profile, Message
+            profile = Profile.query.filter_by(user_id=current_user.id).first()
+            if profile:
+                unread = Message.query.filter_by(profile_id=profile.id, is_read=False).count()
+        return {'lang': flask_session.get('lang', 'es'), 'unread_count': unread}
 
     return app
 

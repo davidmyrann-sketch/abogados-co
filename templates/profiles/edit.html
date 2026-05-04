@@ -1,104 +1,172 @@
 {% extends "base.html" %}
-{% block title %}Editar mi perfil — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Edit my profile' if lang=='en' else 'Editar mi perfil' }} — Abogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-4">
     <div class="row">
         <div class="col-md-8">
-            <h2 class="fw-bold mb-4">Mi perfil</h2>
+            <h2 class="fw-bold mb-4">{{ 'My profile' if lang=='en' else 'Mi perfil' }}</h2>
+
+            <!-- Profile info form -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Nombre del bufete o abogado</label>
+                            <label class="form-label fw-semibold">{{ 'Firm or lawyer name' if lang=='en' else 'Nombre del bufete o abogado' }}</label>
                             <input type="text" name="name" class="form-control" value="{{ profile.name or '' }}" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Ciudad</label>
+                            <label class="form-label fw-semibold">{{ 'City' if lang=='en' else 'Ciudad' }}</label>
                             <select name="city_id" class="form-select">
-                                <option value="">Seleccionar ciudad</option>
+                                <option value="">{{ 'Select city' if lang=='en' else 'Seleccionar ciudad' }}</option>
                                 {% for city in cities %}
                                 <option value="{{ city.id }}" {% if profile.city_id == city.id %}selected{% endif %}>{{ city.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Especialidades</label>
+                            <label class="form-label fw-semibold">{{ 'Specialties' if lang=='en' else 'Especialidades' }}</label>
                             <select name="specialty_ids" class="form-select" multiple size="6">
                                 {% for s in specialties %}
                                 <option value="{{ s.id }}" {% if s in profile.specialties %}selected{% endif %}>{{ s.name }}</option>
                                 {% endfor %}
                             </select>
-                            <small class="text-muted">Mantén Ctrl (Cmd en Mac) para seleccionar varias</small>
+                            <small class="text-muted">{{ 'Hold Ctrl (Cmd on Mac) to select multiple' if lang=='en' else 'Mantén Ctrl (Cmd en Mac) para seleccionar varias' }}</small>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Descripción</label>
+                            <label class="form-label fw-semibold">{{ 'Description' if lang=='en' else 'Descripción' }}</label>
                             <textarea name="description" class="form-control" rows="4">{{ profile.description or '' }}</textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Teléfono</label>
+                                <label class="form-label fw-semibold">{{ 'Phone' if lang=='en' else 'Teléfono' }}</label>
                                 <input type="text" name="phone" class="form-control" value="{{ profile.phone or '' }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Email de contacto</label>
+                                <label class="form-label fw-semibold">{{ 'Contact email' if lang=='en' else 'Email de contacto' }}</label>
                                 <input type="email" name="email" class="form-control" value="{{ profile.email or '' }}">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Sitio web</label>
+                                <label class="form-label fw-semibold">{{ 'Website' if lang=='en' else 'Sitio web' }}</label>
                                 <input type="url" name="website" class="form-control" value="{{ profile.website or '' }}" placeholder="https://...">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Dirección</label>
+                                <label class="form-label fw-semibold">{{ 'Address' if lang=='en' else 'Dirección' }}</label>
                                 <input type="text" name="address" class="form-control" value="{{ profile.address or '' }}">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Fotos (máx. 5MB cada una)</label>
+                            <label class="form-label fw-semibold">{{ 'Photos (max 5MB each)' if lang=='en' else 'Fotos (máx. 5MB cada una)' }}</label>
                             <input type="file" name="images" class="form-control" accept="image/*" multiple>
                         </div>
                         {% if profile.images %}
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Fotos actuales</label>
+                            <label class="form-label fw-semibold">{{ 'Current photos' if lang=='en' else 'Fotos actuales' }}</label>
                             <div class="row g-2">
                                 {% for img in profile.images %}
                                 <div class="col-3">
                                     <img src="{{ img.url }}" class="img-fluid rounded" style="height:80px;object-fit:cover;width:100%;">
                                     <form method="POST" action="{{ url_for('profiles.delete_image', image_id=img.id) }}" class="mt-1">
-                                        <button type="submit" class="btn btn-danger btn-sm w-100" style="font-size:0.7rem;">Eliminar</button>
+                                        <button type="submit" class="btn btn-danger btn-sm w-100" style="font-size:0.7rem;">{{ 'Remove' if lang=='en' else 'Eliminar' }}</button>
                                     </form>
                                 </div>
                                 {% endfor %}
                             </div>
                         </div>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary fw-bold">Guardar cambios</button>
-                        <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-secondary ms-2">Ver perfil público</a>
+                        <button type="submit" class="btn btn-primary fw-bold">{{ 'Save changes' if lang=='en' else 'Guardar cambios' }}</button>
+                        <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-secondary ms-2">{{ 'View public profile' if lang=='en' else 'Ver perfil público' }}</a>
                     </form>
                 </div>
             </div>
+
+            <!-- Services management -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-1"><i class="fas fa-gavel me-2 text-primary"></i>{{ 'Services & Fees' if lang=='en' else 'Servicios y honorarios' }}</h5>
+                    <p class="text-muted small mb-3">{{ 'Add the services you offer with a description and optional fee range. Clients can search by service name.' if lang=='en' else 'Agrega los servicios que ofreces con descripción y rango de honorarios opcional. Los clientes pueden buscar por nombre del servicio.' }}</p>
+
+                    {% if profile.services %}
+                    <div class="mb-4">
+                        {% for svc in profile.services %}
+                        <div class="d-flex justify-content-between align-items-start border rounded p-3 mb-2">
+                            <div>
+                                <div class="fw-semibold">{{ svc.title }}</div>
+                                {% if svc.price_from or svc.price_to %}
+                                <small class="text-primary">
+                                    {% if svc.price_from and svc.price_to %}${{ '{:,}'.format(svc.price_from) }} – ${{ '{:,}'.format(svc.price_to) }}
+                                    {% elif svc.price_from %}{{ 'From' if lang=='en' else 'Desde' }} ${{ '{:,}'.format(svc.price_from) }}
+                                    {% else %}{{ 'Up to' if lang=='en' else 'Hasta' }} ${{ '{:,}'.format(svc.price_to) }}
+                                    {% endif %}
+                                </small>
+                                {% endif %}
+                                {% if svc.description %}<p class="text-muted small mb-0 mt-1">{{ svc.description[:120] }}{% if svc.description|length > 120 %}...{% endif %}</p>{% endif %}
+                            </div>
+                            <form method="POST" action="{{ url_for('profiles.delete_service', service_id=svc.id) }}" class="ms-3">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('profiles.add_service') }}">
+                        <h6 class="fw-semibold mb-2">{{ 'Add service' if lang=='en' else 'Agregar servicio' }}</h6>
+                        <div class="mb-2">
+                            <input type="text" name="title" class="form-control form-control-sm" placeholder="{{ 'Service name, e.g. Labour law' if lang=='en' else 'Nombre del servicio, ej: Derecho laboral' }}" required>
+                        </div>
+                        <div class="mb-2">
+                            <textarea name="description" class="form-control form-control-sm" rows="2" placeholder="{{ 'Describe what this service includes...' if lang=='en' else 'Describe en qué consiste este servicio...' }}"></textarea>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <input type="number" name="price_from" class="form-control form-control-sm" placeholder="{{ 'Price from (e.g. 500000)' if lang=='en' else 'Precio desde (ej: 500000)' }}" min="0">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" name="price_to" class="form-control form-control-sm" placeholder="{{ 'Price up to (e.g. 2000000)' if lang=='en' else 'Precio hasta (ej: 2000000)' }}" min="0">
+                            </div>
+                        </div>
+                        <small class="text-muted d-block mb-2">{{ 'Enter amounts in your preferred currency (COP, USD, etc.)' if lang=='en' else 'Ingresa los montos en la moneda que prefieras (COP, USD, etc.)' }}</small>
+                        <button type="submit" class="btn btn-outline-primary btn-sm fw-semibold">
+                            <i class="fas fa-plus me-1"></i>{{ 'Add service' if lang=='en' else 'Agregar servicio' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
         <div class="col-md-4">
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold">Tu URL</h6>
+                    <h6 class="fw-bold">{{ 'Your URL' if lang=='en' else 'Tu URL' }}</h6>
                     <code class="small">abogados.com.co/bufetes/{{ profile.slug }}</code>
                 </div>
             </div>
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold">Plan actual</h6>
+                    <h6 class="fw-bold">{{ 'Current plan' if lang=='en' else 'Plan actual' }}</h6>
                     <span class="badge {% if profile.tier == 'premium' %}bg-warning text-dark{% elif profile.tier == 'profesional' %}bg-primary{% else %}bg-secondary{% endif %} fs-6">
                         {{ profile.tier|capitalize }}
                     </span>
                 </div>
             </div>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold">{{ 'Messages' if lang=='en' else 'Mensajes' }}</h6>
+                    <a href="{{ url_for('profiles.my_messages') }}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="fas fa-envelope me-1"></i>{{ 'View inbox' if lang=='en' else 'Ver bandeja' }}
+                        {% if unread_count %}<span class="badge bg-warning text-dark ms-1">{{ unread_count }}</span>{% endif %}
+                    </a>
+                </div>
+            </div>
             <div class="card border-danger mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold text-danger">Zona de peligro</h6>
-                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('¿Seguro que deseas eliminar tu perfil? Esta acción no se puede deshacer.')">
-                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">Eliminar mi perfil</button>
+                    <h6 class="fw-bold text-danger">{{ 'Danger zone' if lang=='en' else 'Zona de peligro' }}</h6>
+                    <form method="POST" action="{{ url_for('profiles.delete_profile') }}" onsubmit="return confirm('{{ 'Are you sure? This cannot be undone.' if lang=='en' else '¿Seguro que deseas eliminar tu perfil? Esta acción no se puede deshacer.' }}')">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">{{ 'Delete my profile' if lang=='en' else 'Eliminar mi perfil' }}</button>
                     </form>
                 </div>
             </div>
