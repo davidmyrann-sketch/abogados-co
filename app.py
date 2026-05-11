@@ -29,7 +29,7 @@ def create_app():
     app.config['BASE_URL'] = os.environ.get('BASE_URL', 'http://localhost:5000')
 
     app.config['RESEND_API_KEY'] = os.environ.get('RESEND_API_KEY', '')
-    app.config['MAIL_FROM'] = os.environ.get('MAIL_FROM', 'noreply@abogados.com.co')
+    app.config['MAIL_FROM'] = os.environ.get('MAIL_FROM', 'noreply@losabogados.com.co')
 
     db.init_app(app)
     Migrate(app, db)

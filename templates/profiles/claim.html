@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Claim profile' if lang=='en' else 'Reclamar perfil' }} — abogados.com.co/bufetes/{{ profile.slug }}{% endblock %}
+{% block title %}{{ 'Claim profile' if lang=='en' else 'Reclamar perfil' }} — losabogados.com.co/bufetes/{{ profile.slug }}{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -10,7 +10,7 @@
                     <div class="text-center mb-4">
                         <i class="fas fa-balance-scale fa-3x text-primary mb-3"></i>
                         <h2 class="fw-bold">{{ 'This URL was yours' if lang=='en' else 'Esta URL te pertenecía' }}</h2>
-                        <p class="text-muted">{{ 'The address' if lang=='en' else 'La dirección' }} <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'was active until December 2025. You can reclaim it now.' if lang=='en' else 'estuvo activa hasta diciembre de 2025. Ahora puedes recuperarla.' }}</p>
+                        <p class="text-muted">{{ 'The address' if lang=='en' else 'La dirección' }} <strong>losabogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'was active until December 2025. You can reclaim it now.' if lang=='en' else 'estuvo activa hasta diciembre de 2025. Ahora puedes recuperarla.' }}</p>
                     </div>
 
                     <div class="alert alert-info">

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Payment successful!' if lang=='en' else '¡Pago exitoso!' }} — Abogados.com.co{% endblock %}
+{% block title %}{{ 'Payment successful!' if lang=='en' else '¡Pago exitoso!' }} — losabogados.com.co{% endblock %}
 {% block content %}
 <div class="container py-5 text-center">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <i class="fas fa-check-circle text-success fa-5x mb-4"></i>
             <h2 class="fw-bold">{{ 'Your profile is live!' if lang=='en' else '¡Tu perfil está activo!' }}</h2>
-            <p class="text-muted mb-4">{{ 'Your URL' if lang=='en' else 'Tu URL' }} <strong>abogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'is now online.' if lang=='en' else 'ya está en línea.' }}</p>
+            <p class="text-muted mb-4">{{ 'Your URL' if lang=='en' else 'Tu URL' }} <strong>losabogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'is now online.' if lang=='en' else 'ya está en línea.' }}</p>
             <a href="{{ url_for('profiles.my_profile') }}" class="btn btn-primary btn-lg me-2">{{ 'Complete my profile' if lang=='en' else 'Completar mi perfil' }}</a>
             <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-lg">{{ 'View my profile' if lang=='en' else 'Ver mi perfil' }}</a>
         </div>

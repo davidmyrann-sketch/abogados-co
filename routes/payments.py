@@ -45,7 +45,7 @@ def initiate_payment():
                         'currency': 'usd',
                         'product_data': {
                             'name': f'Apertura perfil — {tier_labels[tier]}',
-                            'description': f'Incluye primer mes. URL: abogados.com.co/bufetes/{profile.slug}'
+                            'description': f'Incluye primer mes. URL: losabogados.com.co/bufetes/{profile.slug}'
                         },
                         'unit_amount': amount,
                     },
