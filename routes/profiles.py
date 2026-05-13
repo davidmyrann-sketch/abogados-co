@@ -311,11 +311,11 @@ def send_contact(slug):
     if lawyer_email and current_app.config.get('RESEND_API_KEY'):
         try:
             resend.Emails.send({
-                "from": current_app.config.get('MAIL_FROM', 'noreply@abogadoya.com.co'),
+                "from": current_app.config.get('MAIL_FROM', 'noreply@Abogadoya.com.co'),
                 "to": [lawyer_email],
-                "subject": "Nueva consulta — abogadoya.com.co",
+                "subject": "Nueva consulta — Abogadoya.com.co",
                 "text": (
-                    f"Nueva consulta en abogadoya.com.co\n\n"
+                    f"Nueva consulta en Abogadoya.com.co\n\n"
                     f"De: {sender_name} <{sender_email}>\n"
                     f"Teléfono: {sender_phone or '—'}\n\n"
                     f"{body}\n\n"
@@ -405,14 +405,14 @@ def reply_message(msg_id):
     if current_app.config.get('RESEND_API_KEY'):
         try:
             resend.Emails.send({
-                "from": current_app.config.get('MAIL_FROM', 'noreply@abogadoya.com.co'),
+                "from": current_app.config.get('MAIL_FROM', 'noreply@Abogadoya.com.co'),
                 "to": [msg.sender_email],
-                "subject": f"Respuesta de {profile.name} — abogadoya.com.co",
+                "subject": f"Respuesta de {profile.name} — Abogadoya.com.co",
                 "text": (
                     f"Hola {msg.sender_name},\n\n"
-                    f"{profile.name} ha respondido a tu consulta en abogadoya.com.co:\n\n"
+                    f"{profile.name} ha respondido a tu consulta en Abogadoya.com.co:\n\n"
                     f"{reply_text}\n\n"
-                    f"---\nabogadoya.com.co"
+                    f"---\nAbogadoya.com.co"
                 )
             })
         except Exception:
