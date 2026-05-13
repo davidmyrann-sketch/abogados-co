@@ -1,5 +1,58 @@
 {% extends "base.html" %}
 {% block title %}Abogadoya.com.co — {{ 'Find your lawyer in Colombia' if lang=='en' else 'Encuentra tu abogado en Colombia' }}{% endblock %}
+{% block description %}{% if lang=='en' %}Find verified lawyers across Colombia. Search by city, specialty or name — labour, civil, criminal, family law and more. Direct contact, no commissions.{% else %}Encuentra abogados verificados en toda Colombia. Busca por ciudad, especialidad o nombre — derecho laboral, civil, penal, familiar y más. Contacto directo, sin comisiones.{% endif %}{% endblock %}
+{% block og_title %}Abogadoya.com.co — {{ 'Find verified lawyers in Colombia' if lang=='en' else 'Encuentra abogados verificados en Colombia' }}{% endblock %}
+{% block og_description %}{{ total_profiles }}+ {{ 'verified lawyers · 32 cities · Direct contact, no fees' if lang=='en' else 'abogados verificados · 32 ciudades · Contacto directo, sin comisiones' }}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://abogadoya.com.co/#website",
+      "url": "https://abogadoya.com.co",
+      "name": "Abogadoya.com.co",
+      "description": "Directorio de abogados verificados en Colombia",
+      "inLanguage": ["es", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://abogadoya.com.co/buscar?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://abogadoya.com.co/#org",
+      "name": "Abogadoya.com.co",
+      "url": "https://abogadoya.com.co",
+      "logo": "https://abogadoya.com.co/static/img/og-image.png",
+      "description": "El directorio jurídico #1 de Colombia",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Colombia"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "soporte@abogadoya.com.co",
+        "contactType": "customer service"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "Directorio de abogados en Colombia",
+      "description": "Lista de abogados y firmas jurídicas verificadas en Colombia",
+      "url": "https://abogadoya.com.co/bufetes",
+      "numberOfItems": {{ total_profiles }}
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 

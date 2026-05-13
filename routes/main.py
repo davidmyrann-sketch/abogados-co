@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, Response, current_app
 from models import db, Profile, City, Specialty, ProfileService
+from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
 
@@ -80,6 +81,61 @@ def about():
 @main_bp.route('/preguntas')
 def faq():
     return render_template('faq.html')
+
+@main_bp.route('/robots.txt')
+def robots():
+    base = current_app.config.get('BASE_URL', 'https://abogadoya.com.co')
+    content = f"""User-agent: *
+Disallow: /admin
+Disallow: /mi-perfil
+Disallow: /login
+Disallow: /registro
+Disallow: /stripe/
+Allow: /
+
+Sitemap: {base}/sitemap.xml
+"""
+    return Response(content, mimetype='text/plain')
+
+
+@main_bp.route('/sitemap.xml')
+def sitemap():
+    base = current_app.config.get('BASE_URL', 'https://abogadoya.com.co')
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+
+    urls = [
+        (base + '/', today, 'daily', '1.0'),
+        (base + '/bufetes', today, 'daily', '0.9'),
+        (base + '/buscar', today, 'daily', '0.8'),
+        (base + '/quienes', today, 'monthly', '0.5'),
+        (base + '/preguntas', today, 'monthly', '0.5'),
+    ]
+
+    cities = City.query.all()
+    for city in cities:
+        urls.append((base + f'/bufetes/ciudad/{city.slug}', today, 'weekly', '0.7'))
+
+    specialties = Specialty.query.all()
+    for spec in specialties:
+        urls.append((base + f'/bufetes/especialidad/{spec.slug}', today, 'weekly', '0.7'))
+
+    profiles = Profile.query.filter_by(status='active').all()
+    for p in profiles:
+        urls.append((base + f'/bufetes/{p.slug}', today, 'weekly', '0.8'))
+
+    xml_parts = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml_parts.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for loc, lastmod, changefreq, priority in urls:
+        xml_parts.append(f'''  <url>
+    <loc>{loc}</loc>
+    <lastmod>{lastmod}</lastmod>
+    <changefreq>{changefreq}</changefreq>
+    <priority>{priority}</priority>
+  </url>''')
+    xml_parts.append('</urlset>')
+
+    return Response('\n'.join(xml_parts), mimetype='application/xml')
+
 
 @main_bp.route('/api/search-suggest')
 def search_suggest():

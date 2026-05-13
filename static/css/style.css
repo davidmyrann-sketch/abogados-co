@@ -1,40 +1,359 @@
+/* ===================================================
+   ABOGADOYA DESIGN SYSTEM
+   Principles: Dieter Rams (less but better), Bringhurst (typography),
+   Nielsen/Norman (usability), Krug (don't make me think)
+   8px grid · Major Third type scale · 3-color palette
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* --- TOKENS ---------------------------------------- */
 :root {
-    --primary: #1a3c6e;
-    --accent: #e8a020;
+  /* Colors — navy (trust/legal) + amber (action) + white */
+  --c-primary:       #1a3a5c;
+  --c-primary-dark:  #0f2540;
+  --c-primary-light: #2a5298;
+  --c-accent:        #f59e0b;
+  --c-accent-dark:   #d97706;
+  --c-success:       #16a34a;
+  --c-danger:        #dc2626;
+  --c-text:          #1f2937;
+  --c-muted:         #6b7280;
+  --c-border:        #e5e7eb;
+  --c-bg:            #ffffff;
+  --c-bg-soft:       #f8f9fb;
+  --c-bg-blue:       #f0f7ff;
+
+  /* Type scale — Major Third (1.25×) */
+  --t-xs:   0.75rem;   /* 12 */
+  --t-sm:   0.875rem;  /* 14 */
+  --t-base: 1rem;      /* 16 */
+  --t-lg:   1.125rem;  /* 18 */
+  --t-xl:   1.25rem;   /* 20 */
+  --t-2xl:  1.5rem;    /* 24 */
+  --t-3xl:  1.875rem;  /* 30 */
+  --t-4xl:  2.25rem;   /* 36 */
+  --t-5xl:  3rem;      /* 48 */
+
+  /* Spacing — 8px grid */
+  --s-1:  8px;
+  --s-2:  16px;
+  --s-3:  24px;
+  --s-4:  32px;
+  --s-5:  40px;
+  --s-6:  48px;
+  --s-8:  64px;
+  --s-10: 80px;
+  --s-12: 96px;
+
+  /* Shadows (depth without noise) */
+  --sh-xs: 0 1px 2px rgba(0,0,0,.06);
+  --sh-sm: 0 2px 8px rgba(0,0,0,.07);
+  --sh-md: 0 4px 16px rgba(0,0,0,.08);
+  --sh-lg: 0 8px 32px rgba(0,0,0,.10);
+  --sh-xl: 0 16px 48px rgba(0,0,0,.12);
+
+  /* Radius */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   20px;
+  --r-full: 9999px;
+
+  /* Transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --tr:   200ms var(--ease);
+  --tr-lg: 300ms var(--ease);
 }
 
-body { color: #333; }
+/* --- BASE ------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
 
-.bg-primary { background-color: var(--primary) !important; }
-.btn-primary { background-color: var(--primary); border-color: var(--primary); }
-.btn-primary:hover { background-color: #142f56; border-color: #142f56; }
-.text-primary { color: var(--primary) !important; }
-.border-primary { border-color: var(--primary) !important; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
-.hero-section { background: linear-gradient(135deg, #1a3c6e 0%, #2b5ba8 100%); padding: 60px 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: var(--t-base);
+  line-height: 1.6;
+  color: var(--c-text);
+  background: var(--c-bg);
+}
 
-.profile-card { transition: transform 0.2s, box-shadow 0.2s; }
-.profile-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,.15) !important; }
+/* Bringhurst: max ~70 chars per line for comfortable reading */
+p { max-width: 70ch; }
+p.wide, .no-max { max-width: none; }
 
-.premium-card { border-top: 3px solid var(--accent) !important; }
+/* Focus visible — accessibility */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
-.plan-card { cursor: pointer; transition: all 0.2s; }
+/* --- TYPOGRAPHY ------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--c-primary);
+  letter-spacing: -0.02em;
+}
+
+/* --- LINKS ----------------------------------------- */
+a { transition: color var(--tr); }
+
+/* --- BOOTSTRAP OVERRIDES --------------------------- */
+
+/* Primary color system */
+.bg-primary    { background-color: var(--c-primary) !important; }
+.text-primary  { color: var(--c-primary) !important; }
+.border-primary{ border-color: var(--c-primary) !important; }
+
+/* Buttons — Fitts's Law: big enough to click easily */
+.btn {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: var(--r-md) !important;
+  transition: all var(--tr);
+  border: none;
+}
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--c-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(26,58,92,.25);
+}
+.btn-primary:hover {
+  background: var(--c-primary-dark);
+  box-shadow: 0 4px 16px rgba(26,58,92,.35);
+  transform: translateY(-1px);
+}
+
+.btn-warning {
+  background: var(--c-accent);
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(245,158,11,.30);
+}
+.btn-warning:hover {
+  background: var(--c-accent-dark);
+  box-shadow: 0 4px 16px rgba(245,158,11,.40);
+  transform: translateY(-1px);
+  color: #1a1a1a;
+}
+
+.btn-outline-primary {
+  border: 1.5px solid var(--c-primary) !important;
+  color: var(--c-primary);
+  background: transparent;
+}
+.btn-outline-primary:hover {
+  background: var(--c-primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* --- NAVBAR ---------------------------------------- */
+.navbar { box-shadow: 0 1px 0 rgba(255,255,255,.08); }
+.navbar-brand {
+  font-size: var(--t-lg);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.nav-link { font-weight: 500; transition: opacity var(--tr); }
+.nav-link:hover { opacity: .8; }
+
+/* --- CARDS ----------------------------------------- */
+.card {
+  border-radius: var(--r-lg) !important;
+  border: 1px solid var(--c-border);
+  box-shadow: var(--sh-sm);
+  transition: box-shadow var(--tr), transform var(--tr);
+}
+.card:hover { box-shadow: var(--sh-lg); }
+
+/* Profile cards */
+.profile-card {
+  border-radius: var(--r-lg) !important;
+  border: 1px solid var(--c-border);
+  box-shadow: var(--sh-sm);
+  transition: box-shadow var(--tr-lg), transform var(--tr-lg);
+  overflow: hidden;
+}
+.profile-card:hover {
+  box-shadow: var(--sh-lg);
+  transform: translateY(-3px);
+}
+
+/* --- FORM CONTROLS --------------------------------- */
+.form-control, .form-select {
+  border-radius: var(--r-md) !important;
+  border: 1.5px solid var(--c-border);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: var(--t-sm);
+  transition: border-color var(--tr), box-shadow var(--tr);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(26,58,92,.12);
+  outline: none;
+}
+
+/* --- BADGES ---------------------------------------- */
+.badge {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--t-xs);
+  border-radius: var(--r-full) !important;
+  padding: 4px 10px;
+}
+
+/* --- AVATAR ---------------------------------------- */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: var(--c-primary);
+  color: #fff;
+}
+
+/* --- PLAN / TIER CARDS (signup flow) -------------- */
+.plan-card { cursor: pointer; transition: all var(--tr); border-radius: var(--r-lg) !important; }
 .plan-label { cursor: pointer; }
-.selected-plan { background-color: #eef4ff !important; border-color: var(--primary) !important; }
-
-.avatar-placeholder { font-weight: 700; }
-
-.hover-shadow:hover { box-shadow: 0 4px 15px rgba(0,0,0,.1); transform: translateY(-1px); transition: all 0.2s; }
-
-.navbar-brand { font-size: 1.3rem; }
-
-.badge { font-size: 0.75rem; }
-
-footer a:hover { color: #fff !important; }
-
-.card { border-radius: 10px; }
-
-@media (max-width: 768px) {
-    .hero-section { padding: 40px 0; }
-    .hero-section h1 { font-size: 1.8rem; }
+.selected-plan {
+  background-color: var(--c-bg-blue) !important;
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 0 0 2px var(--c-primary);
 }
+
+/* --- ALERTS ---------------------------------------- */
+.alert { border-radius: var(--r-md) !important; font-size: var(--t-sm); }
+
+/* --- FOOTER ---------------------------------------- */
+footer a { transition: color var(--tr); }
+footer a:hover { color: #fff !important; text-decoration: underline; }
+
+/* --- HOVER UTILITY --------------------------------- */
+.hover-lift {
+  transition: box-shadow var(--tr-lg), transform var(--tr-lg);
+}
+.hover-lift:hover {
+  box-shadow: var(--sh-lg);
+  transform: translateY(-3px);
+}
+.hover-shadow:hover {
+  box-shadow: var(--sh-md);
+  transform: translateY(-1px);
+  transition: all var(--tr);
+}
+
+/* --- SECTION SPACING (8px grid) ------------------- */
+.section-sm  { padding: var(--s-6) 0; }
+.section-md  { padding: var(--s-8) 0; }
+.section-lg  { padding: var(--s-10) 0; }
+.section-xl  { padding: var(--s-12) 0; }
+
+/* --- TRUST BADGE ROW ------------------------------ */
+.trust-row {
+  display: flex;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-sm);
+  color: rgba(255,255,255,.55);
+  font-weight: 500;
+}
+
+/* --- STAT NUMBERS --------------------------------- */
+.stat-number {
+  font-size: var(--t-4xl);
+  font-weight: 900;
+  color: var(--c-primary);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.stat-label {
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--c-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-top: 4px;
+}
+
+/* --- CHECKLIST ------------------------------------ */
+.check-list { list-style: none; padding: 0; margin: 0; }
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-1);
+  padding: 6px 0;
+  font-size: var(--t-base);
+  color: var(--c-text);
+}
+.check-list li::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2316a34a'%3E%3Cpath fill-rule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clip-rule='evenodd'/%3E%3C/svg%3E") no-repeat center;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+/* --- FAQ / OBJECTION CARDS ------------------------ */
+.faq-card {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: var(--s-3);
+  box-shadow: var(--sh-sm);
+  border-left: 3px solid var(--c-primary);
+  transition: box-shadow var(--tr);
+}
+.faq-card:hover { box-shadow: var(--sh-md); }
+.faq-card h6 { color: var(--c-primary); font-weight: 700; margin-bottom: 8px; }
+.faq-card p  { font-size: var(--t-sm); color: var(--c-muted); margin: 0; max-width: none; }
+
+/* --- PRICING CARD --------------------------------- */
+.pricing-card {
+  background: #fff;
+  border-radius: var(--r-xl);
+  padding: var(--s-5);
+  box-shadow: var(--sh-xl);
+  text-align: center;
+  position: relative;
+}
+.pricing-price {
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--c-primary);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+/* --- RESPONSIVE ----------------------------------- */
+@media (max-width: 768px) {
+  :root {
+    --t-4xl: 1.75rem;
+    --t-5xl: 2.25rem;
+  }
+  .section-lg  { padding: var(--s-6) 0; }
+  .section-xl  { padding: var(--s-8) 0; }
+  .pricing-card { padding: var(--s-4); }
+  .pricing-price { font-size: 52px; }
+}
+
+@media (max-width: 576px) {
+  .navbar-brand { font-size: var(--t-base); }
+}
+
+/* --- MISC ----------------------------------------- */
+.navbar-brand { font-size: 1.3rem; }
