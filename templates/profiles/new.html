@@ -4,7 +4,8 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <h2 class="fw-bold mb-4 text-center">{{ 'Create your lawyer profile' if lang=='en' else 'Crea tu perfil de abogado' }}</h2>
+            <h2 class="fw-bold mb-2 text-center">{{ 'Create your lawyer profile' if lang=='en' else 'Crea tu perfil de abogado' }}</h2>
+            <p class="text-muted text-center mb-4">{{ '$40 USD/month · Cancel anytime' if lang=='en' else '$40 USD/mes · Cancela cuando quieras' }}</p>
             <div class="card border-0 shadow">
                 <div class="card-body p-4">
                     <form method="POST">
@@ -33,25 +34,12 @@
                             <label class="form-label fw-semibold">{{ 'Short description' if lang=='en' else 'Descripción breve' }}</label>
                             <textarea name="description" class="form-control" rows="3" placeholder="{{ 'Tell us about your firm...' if lang=='en' else 'Cuéntanos sobre tu bufete...' }}"></textarea>
                         </div>
-
-                        <hr>
-                        <h5 class="fw-bold mb-3">{{ 'Choose your plan (from month 2)' if lang=='en' else 'Elige tu plan (desde el mes 2)' }}</h5>
-                        <div class="row g-3 mb-4">
-                            {% for key, price in tiers.items() %}
-                            <div class="col-md-4">
-                                <div class="plan-card p-3 border rounded text-center">
-                                    <input type="radio" name="tier" value="{{ key }}" id="tier_{{ key }}" class="d-none" {% if key == 'basico' %}checked{% endif %}>
-                                    <label for="tier_{{ key }}" class="plan-label w-100">
-                                        <div class="fw-bold">{{ key|capitalize }}</div>
-                                        <div class="h4 text-primary fw-bold">${{ price }}<small class="fs-6">/mes</small></div>
-                                    </label>
-                                </div>
+                        <div class="alert alert-light border d-flex align-items-center mb-4">
+                            <i class="fas fa-credit-card text-primary me-3 fa-lg"></i>
+                            <div>
+                                <strong>{{ '$40 USD/month' if lang=='en' else '$40 USD/mes' }}</strong>
+                                <div class="small text-muted">{{ 'Cancel with 1 month notice. No setup fee.' if lang=='en' else 'Cancela con 1 mes de aviso. Sin tarifa de apertura.' }}</div>
                             </div>
-                            {% endfor %}
-                        </div>
-                        <div class="alert alert-info small">
-                            <i class="fas fa-info-circle me-1"></i>
-                            <strong>{{ 'Opening fee: $' + opening_fee|string + ' USD' if lang=='en' else 'Tarifa de apertura: $' + opening_fee|string + ' USD' }}</strong> — {{ 'includes the first full month.' if lang=='en' else 'incluye el primer mes completo.' }}
                         </div>
                         <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">{{ 'Continue to payment' if lang=='en' else 'Continuar al pago' }}</button>
                     </form>
@@ -60,15 +48,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-{% block scripts %}
-<script>
-document.querySelectorAll('input[name="tier"]').forEach(r => {
-    r.addEventListener('change', function() {
-        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected-plan'));
-        this.closest('.plan-card').classList.add('selected-plan');
-    });
-});
-document.querySelector('#tier_basico').closest('.plan-card').classList.add('selected-plan');
-</script>
 {% endblock %}

@@ -147,10 +147,26 @@
             </div>
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body">
-                    <h6 class="fw-bold">{{ 'Current plan' if lang=='en' else 'Plan actual' }}</h6>
-                    <span class="badge {% if profile.tier == 'premium' %}bg-warning text-dark{% elif profile.tier == 'profesional' %}bg-primary{% else %}bg-secondary{% endif %} fs-6">
-                        {{ profile.tier|capitalize }}
-                    </span>
+                    <h6 class="fw-bold">{{ 'Subscription' if lang=='en' else 'Suscripción' }}</h6>
+                    {% if profile.status == 'active' %}
+                        <span class="badge bg-success mb-2">{{ 'Active' if lang=='en' else 'Activa' }}</span>
+                        {% if profile.next_billing_date %}
+                        <div class="small text-muted mb-2">{{ 'Next billing:' if lang=='en' else 'Próximo cobro:' }} {{ profile.next_billing_date.strftime('%d/%m/%Y') }}</div>
+                        {% endif %}
+                        {% if profile.cancel_at_period_end %}
+                        <div class="small text-warning">{{ 'Cancels at end of period' if lang=='en' else 'Se cancela al final del período' }}</div>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('payments.cancel_subscription', profile_id=profile.id) }}" onsubmit="return confirm('{{ 'Cancel subscription? Your profile stays active until the end of the current billing period.' if lang==\'en\' else \'¿Cancelar suscripción? Tu perfil seguirá activo hasta el final del período de facturación actual.\' }}')">
+                            <button type="submit" class="btn btn-outline-warning btn-sm w-100">{{ 'Cancel subscription' if lang=='en' else 'Cancelar suscripción' }}</button>
+                        </form>
+                        {% endif %}
+                    {% elif profile.status == 'pending_payment' %}
+                        <span class="badge bg-warning text-dark mb-2">{{ 'Pending payment' if lang=='en' else 'Pago pendiente' }}</span>
+                        <a href="{{ url_for('payments.start_subscription', profile_id=profile.id) }}" class="btn btn-primary btn-sm w-100">{{ 'Complete payment' if lang=='en' else 'Completar pago' }}</a>
+                    {% else %}
+                        <span class="badge bg-secondary mb-2">{{ profile.status }}</span>
+                        <a href="{{ url_for('payments.start_subscription', profile_id=profile.id) }}" class="btn btn-primary btn-sm w-100">{{ 'Activate — $40/month' if lang=='en' else 'Activar — $40/mes' }}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card border-0 shadow-sm mb-3">

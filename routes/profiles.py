@@ -9,20 +9,6 @@ import re
 
 profiles_bp = Blueprint('profiles', __name__)
 
-TIER_PRICES = {
-    'basico': 5,
-    'profesional': 20,
-    'premium': 35
-}
-
-TIER_NAMES = {
-    'basico': 'Básico — $5/mes',
-    'profesional': 'Profesional — $20/mes',
-    'premium': 'Premium — $35/mes'
-}
-
-OPENING_FEE = 100
-
 def slugify(text):
     text = text.lower().strip()
     text = re.sub(r'[áàäâ]', 'a', text)
@@ -61,11 +47,6 @@ def profile_detail(slug):
     if not profile:
         abort(404)
 
-    if profile.status == 'available':
-        return render_template('profiles/claim.html', profile=profile,
-                               tiers=TIER_PRICES, tier_names=TIER_NAMES,
-                               opening_fee=OPENING_FEE)
-
     if profile.status in ('pending_payment',):
         return render_template('profiles/pending.html', profile=profile)
 
@@ -80,35 +61,9 @@ def profile_detail(slug):
     return render_template('profiles/detail.html', profile=profile, related=related)
 
 
-@profiles_bp.route('/bufetes/<slug>/reclamar', methods=['GET', 'POST'])
+@profiles_bp.route('/bufetes/<slug>/reclamar')
 def claim_profile(slug):
-    profile = Profile.query.filter_by(slug=slug).first_or_404()
-
-    if profile.status != 'available':
-        flash('Este perfil ya no está disponible para reclamar.', 'warning')
-        return redirect(url_for('profiles.profile_detail', slug=slug))
-
-    if request.method == 'POST':
-        tier = request.form.get('tier', 'basico')
-        if tier not in TIER_PRICES:
-            tier = 'basico'
-
-        if not current_user.is_authenticated:
-            # Store in session and redirect to register
-            from flask import session
-            session['claim_slug'] = slug
-            session['claim_tier'] = tier
-            flash('Crea una cuenta para continuar con el proceso de reclamación.', 'info')
-            return redirect(url_for('auth.register'))
-
-        return redirect(url_for('payments.initiate_payment',
-                                profile_id=profile.id,
-                                tier=tier,
-                                payment_type='opening_fee'))
-
-    return render_template('profiles/claim.html', profile=profile,
-                           tiers=TIER_PRICES, tier_names=TIER_NAMES,
-                           opening_fee=OPENING_FEE)
+    return redirect(url_for('profiles.new_profile'))
 
 
 @profiles_bp.route('/nuevo-perfil', methods=['GET', 'POST'])
@@ -121,12 +76,10 @@ def new_profile():
         name = request.form.get('name', '').strip()
         city_id = request.form.get('city_id')
         specialty_ids = request.form.getlist('specialty_ids')
-        tier = request.form.get('tier', 'basico')
 
         if not name:
             flash('El nombre es obligatorio.', 'danger')
-            return render_template('profiles/new.html', cities=cities, specialties=specialties,
-                                   tiers=TIER_PRICES, tier_names=TIER_NAMES, opening_fee=OPENING_FEE)
+            return render_template('profiles/new.html', cities=cities, specialties=specialties)
 
         slug = slugify(name)
         base_slug = slug
@@ -143,7 +96,6 @@ def new_profile():
             email=request.form.get('email', ''),
             phone=request.form.get('phone', ''),
             description=request.form.get('description', ''),
-            tier=tier,
             status='pending_payment',
             is_legacy=False
         )
@@ -155,13 +107,9 @@ def new_profile():
         db.session.add(profile)
         db.session.commit()
 
-        return redirect(url_for('payments.initiate_payment',
-                                profile_id=profile.id,
-                                tier=tier,
-                                payment_type='opening_fee'))
+        return redirect(url_for('payments.start_subscription', profile_id=profile.id))
 
-    return render_template('profiles/new.html', cities=cities, specialties=specialties,
-                           tiers=TIER_PRICES, tier_names=TIER_NAMES, opening_fee=OPENING_FEE)
+    return render_template('profiles/new.html', cities=cities, specialties=specialties)
 
 
 @profiles_bp.route('/mi-perfil', methods=['GET', 'POST'])
@@ -248,25 +196,18 @@ def delete_profile():
             except Exception:
                 pass
 
-    # Reset to available (preserve slug for SEO)
-    profile.status = 'available'
-    profile.user_id = None
-    profile.name = None
-    profile.description = None
-    profile.email = None
-    profile.phone = None
-    profile.website = None
-    profile.address = None
-    profile.specialties = []
-    for img in list(profile.images):
-        db.session.delete(img)
-    for svc in list(profile.services):
-        db.session.delete(svc)
-    for msg in list(profile.messages):
-        db.session.delete(msg)
+    import stripe as stripe_lib
+    stripe_key = current_app.config.get('STRIPE_SECRET_KEY')
+    if stripe_key and profile.stripe_subscription_id:
+        stripe_lib.api_key = stripe_key
+        try:
+            stripe_lib.Subscription.modify(profile.stripe_subscription_id, cancel_at_period_end=True)
+        except Exception:
+            pass
 
+    db.session.delete(profile)
     db.session.commit()
-    flash('Tu perfil ha sido eliminado. La URL quedará disponible para otros abogados.', 'info')
+    flash('Tu perfil ha sido eliminado.', 'info')
     return redirect(url_for('main.index'))
 
 

@@ -55,10 +55,14 @@ class Profile(db.Model):
     phone = db.Column(db.String(50))
     website = db.Column(db.String(255))
     address = db.Column(db.String(500))
-    tier = db.Column(db.String(20), default='basico')  # basico, profesional, premium
-    # available=pre-seeded/unclaimed, pending=paid but not confirmed, active=live, inactive=deactivated
-    status = db.Column(db.String(20), default='available')
-    is_legacy = db.Column(db.Boolean, default=True)
+    tier = db.Column(db.String(20), default='standard')
+    # pending_payment, active, cancelled, inactive
+    status = db.Column(db.String(20), default='inactive')
+    is_legacy = db.Column(db.Boolean, default=False)
+    stripe_subscription_id = db.Column(db.String(255))
+    stripe_customer_id = db.Column(db.String(255))
+    cancel_at_period_end = db.Column(db.Boolean, default=False)
+    cancelled_at = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
