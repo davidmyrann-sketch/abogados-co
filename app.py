@@ -11,6 +11,26 @@ from routes.admin import admin_bp
 from routes.payments import payments_bp
 
 
+def _apply_migrations(db):
+    """Add columns that may be missing from older DB schemas."""
+    alterations = [
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stripe_subscription_id VARCHAR(255)",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stripe_customer_id VARCHAR(255)",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS cancel_at_period_end BOOLEAN DEFAULT FALSE",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS cancelled_at TIMESTAMP",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS subscription_start TIMESTAMP",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS next_billing_date TIMESTAMP",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP",
+        "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS is_legacy BOOLEAN DEFAULT FALSE",
+    ]
+    for sql in alterations:
+        try:
+            db.session.execute(db.text(sql))
+        except Exception:
+            db.session.rollback()
+    db.session.commit()
+
+
 def create_app():
     app = Flask(__name__)
 
@@ -33,6 +53,10 @@ def create_app():
 
     db.init_app(app)
     Migrate(app, db)
+
+    with app.app_context():
+        db.create_all()
+        _apply_migrations(db)
 
     resend_key = app.config.get('RESEND_API_KEY', '')
     if resend_key:
