@@ -1,29 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Abogadoya.com.co — Encuentra tu abogado en Colombia{% endblock %}
+{% block title %}Abogadoya.com.co — {{ 'Find your lawyer in Colombia' if lang=='en' else 'Encuentra tu abogado en Colombia' }}{% endblock %}
 
 {% block content %}
 
 <!-- HERO -->
 <section style="background:linear-gradient(135deg,#1a3a5c 0%,#0f2540 100%);color:#fff;padding:80px 0 60px">
   <div class="container text-center">
-    <span style="background:rgba(255,255,255,.12);border-radius:20px;padding:6px 18px;font-size:13px;letter-spacing:.05em">DIRECTORIO DE ABOGADOS EN COLOMBIA</span>
+    <span style="background:rgba(255,255,255,.12);border-radius:20px;padding:6px 18px;font-size:13px;letter-spacing:.05em">{{ 'LAWYER DIRECTORY IN COLOMBIA' if lang=='en' else 'DIRECTORIO DE ABOGADOS EN COLOMBIA' }}</span>
     <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin:20px 0 16px;line-height:1.15">
-      Encuentra el abogado<br>que necesitas, hoy
+      {{ 'Find the lawyer<br>you need, today' if lang=='en' else 'Encuentra el abogado<br>que necesitas, hoy' }}
     </h1>
     <p style="font-size:1.1rem;opacity:.85;max-width:540px;margin:0 auto 36px">
-      Abogados verificados en toda Colombia. Busca por ciudad, especialidad o nombre y contacta directamente.
+      {{ 'Verified lawyers across Colombia. Search by city, specialty or name and contact them directly.' if lang=='en' else 'Abogados verificados en toda Colombia. Busca por ciudad, especialidad o nombre y contacta directamente.' }}
     </p>
     <form action="{{ url_for('main.search') }}" method="GET"
           style="background:#fff;border-radius:14px;padding:20px;max-width:680px;margin:0 auto;box-shadow:0 8px 40px rgba(0,0,0,.25)">
       <div class="row g-2">
         <div class="col-md-4">
           <input type="text" name="q" class="form-control"
-                 placeholder="Nombre o especialidad..."
+                 placeholder="{{ 'Name or specialty...' if lang=='en' else 'Nombre o especialidad...' }}"
                  style="border-radius:8px;height:46px">
         </div>
         <div class="col-md-3">
           <select name="ciudad" class="form-select" style="border-radius:8px;height:46px">
-            <option value="">Todas las ciudades</option>
+            <option value="">{{ 'All cities' if lang=='en' else 'Todas las ciudades' }}</option>
             {% for city in cities %}
             <option value="{{ city.slug }}">{{ city.name }}</option>
             {% endfor %}
@@ -31,21 +31,21 @@
         </div>
         <div class="col-md-3">
           <select name="especialidad" class="form-select" style="border-radius:8px;height:46px">
-            <option value="">Todas las especialidades</option>
+            <option value="">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</option>
             {% for spec in specialties %}
-            <option value="{{ spec.slug }}">{{ spec.name }}</option>
+            <option value="{{ spec.slug }}">{{ spec_name(spec) }}</option>
             {% endfor %}
           </select>
         </div>
         <div class="col-md-2">
           <button type="submit" class="btn btn-warning fw-bold w-100" style="height:46px;border-radius:8px;font-size:15px">
-            <i class="fas fa-search me-1"></i> Buscar
+            <i class="fas fa-search me-1"></i> {{ 'Search' if lang=='en' else 'Buscar' }}
           </button>
         </div>
       </div>
     </form>
     <p style="margin-top:20px;opacity:.6;font-size:13px">
-      {{ total_profiles }} abogados y firmas registradas &middot; Bogotá, Medellín, Cali, Barranquilla y más
+      {{ total_profiles }} {{ 'lawyers and firms registered' if lang=='en' else 'abogados y firmas registradas' }} &middot; Bogotá, Medellín, Cali, Barranquilla {{ 'and more' if lang=='en' else 'y más' }}
     </p>
   </div>
 </section>
@@ -54,8 +54,8 @@
 <section style="padding:70px 0;background:#f8f9fb">
   <div class="container">
     <div class="text-center mb-5">
-      <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c">¿Por qué usar Abogadoya?</h2>
-      <p class="text-muted">La forma más rápida de encontrar representación legal en Colombia</p>
+      <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c">{{ 'Why use Abogadoya?' if lang=='en' else '¿Por qué usar Abogadoya?' }}</h2>
+      <p class="text-muted">{{ 'The fastest way to find legal representation in Colombia' if lang=='en' else 'La forma más rápida de encontrar representación legal en Colombia' }}</p>
     </div>
     <div class="row g-4">
       <div class="col-md-4">
@@ -63,8 +63,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#2563eb18;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-search" style="color:#2563eb;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Búsqueda inteligente</h6>
-          <p class="text-muted small mb-0">Filtra por ciudad, especialidad y nombre. Encuentra exactamente lo que necesitas en segundos.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Smart search' if lang=='en' else 'Búsqueda inteligente' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Filter by city, specialty and name. Find exactly what you need in seconds.' if lang=='en' else 'Filtra por ciudad, especialidad y nombre. Encuentra exactamente lo que necesitas en segundos.' }}</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -72,8 +72,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#16a34a18;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-shield-alt" style="color:#16a34a;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Perfiles verificados</h6>
-          <p class="text-muted small mb-0">Cada abogado listado ha completado un proceso de registro. Datos reales, contacto directo.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Verified profiles' if lang=='en' else 'Perfiles verificados' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Every listed lawyer has completed a registration process. Real data, direct contact.' if lang=='en' else 'Cada abogado listado ha completado un proceso de registro. Datos reales, contacto directo.' }}</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -81,8 +81,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#dc262618;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-phone-alt" style="color:#dc2626;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Contacto inmediato</h6>
-          <p class="text-muted small mb-0">Llama o escribe directamente al abogado. Sin intermediarios, sin tiempos de espera.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Immediate contact' if lang=='en' else 'Contacto inmediato' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Call or write directly to the lawyer. No middlemen, no waiting.' if lang=='en' else 'Llama o escribe directamente al abogado. Sin intermediarios, sin tiempos de espera.' }}</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -90,8 +90,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#9333ea18;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-balance-scale" style="color:#9333ea;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Todas las especialidades</h6>
-          <p class="text-muted small mb-0">Derecho laboral, civil, penal, familiar, comercial, migratorio y más de 30 especialidades.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'All specialties' if lang=='en' else 'Todas las especialidades' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Labour, civil, criminal, family, commercial, immigration law and 30+ specialties.' if lang=='en' else 'Derecho laboral, civil, penal, familiar, comercial, migratorio y más de 30 especialidades.' }}</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -99,8 +99,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#ea580c18;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-map-marker-alt" style="color:#ea580c;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Cobertura nacional</h6>
-          <p class="text-muted small mb-0">Abogados en todas las ciudades y departamentos de Colombia.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'National coverage' if lang=='en' else 'Cobertura nacional' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Lawyers in every city and department across Colombia.' if lang=='en' else 'Abogados en todas las ciudades y departamentos de Colombia.' }}</p>
         </div>
       </div>
       <div class="col-md-4">
@@ -108,8 +108,8 @@
           <div style="width:48px;height:48px;border-radius:12px;background:#ca8a0418;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
             <i class="fas fa-star" style="color:#ca8a04;font-size:20px"></i>
           </div>
-          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Valoraciones reales</h6>
-          <p class="text-muted small mb-0">Lee opiniones de otros clientes antes de tomar una decisión.</p>
+          <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Real reviews' if lang=='en' else 'Valoraciones reales' }}</h6>
+          <p class="text-muted small mb-0">{{ 'Read opinions from other clients before making a decision.' if lang=='en' else 'Lee opiniones de otros clientes antes de tomar una decisión.' }}</p>
         </div>
       </div>
     </div>
@@ -121,8 +121,8 @@
 <section style="padding:60px 0;background:#fff">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 style="font-size:1.6rem;font-weight:800;color:#1a3a5c"><i class="fas fa-star text-warning me-2"></i>Abogados destacados</h2>
-      <a href="{{ url_for('profiles.list_profiles') }}" class="btn btn-outline-primary btn-sm">Ver todos</a>
+      <h2 style="font-size:1.6rem;font-weight:800;color:#1a3a5c"><i class="fas fa-star text-warning me-2"></i>{{ 'Featured lawyers' if lang=='en' else 'Abogados destacados' }}</h2>
+      <a href="{{ url_for('profiles.list_profiles') }}" class="btn btn-outline-primary btn-sm">{{ 'View all' if lang=='en' else 'Ver todos' }}</a>
     </div>
     <div class="row g-4">
       {% for profile in featured %}
@@ -143,7 +143,7 @@
             {% if profile.specialties %}
             <div class="mb-2">
               {% for s in profile.specialties[:2] %}
-              <span style="background:#f1f5f9;color:#475569;border-radius:20px;padding:3px 10px;font-size:11px;margin-right:4px">{{ s.name }}</span>
+              <span style="background:#f1f5f9;color:#475569;border-radius:20px;padding:3px 10px;font-size:11px;margin-right:4px">{{ spec_name(s) }}</span>
               {% endfor %}
             </div>
             {% endif %}
@@ -164,48 +164,48 @@
   <div class="container">
     <div class="row align-items-center g-5">
       <div class="col-md-6">
-        <span style="background:#2563eb;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700">PARA ABOGADOS</span>
-        <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c;margin:16px 0 14px">Haz crecer tu práctica legal con Abogadoya</h2>
-        <p class="text-muted mb-4">Miles de personas buscan abogados en Colombia cada mes. Con un perfil en Abogadoya apareces exactamente cuando te necesitan.</p>
+        <span style="background:#2563eb;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700">{{ 'FOR LAWYERS' if lang=='en' else 'PARA ABOGADOS' }}</span>
+        <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c;margin:16px 0 14px">{{ 'Grow your legal practice with Abogadoya' if lang=='en' else 'Haz crecer tu práctica legal con Abogadoya' }}</h2>
+        <p class="text-muted mb-4">{{ 'Thousands of people search for lawyers in Colombia every month. With a profile on Abogadoya you appear exactly when they need you.' if lang=='en' else 'Miles de personas buscan abogados en Colombia cada mes. Con un perfil en Abogadoya apareces exactamente cuando te necesitan.' }}</p>
         <div class="d-flex flex-column gap-3 mb-4">
           <div class="d-flex align-items-start gap-2">
             <i class="fas fa-check-circle" style="color:#16a34a;margin-top:3px;flex-shrink:0"></i>
-            <span style="font-size:15px;color:#374151">Perfil visible en búsquedas de Google y dentro de la plataforma</span>
+            <span style="font-size:15px;color:#374151">{{ 'Profile visible in Google searches and within the platform' if lang=='en' else 'Perfil visible en búsquedas de Google y dentro de la plataforma' }}</span>
           </div>
           <div class="d-flex align-items-start gap-2">
             <i class="fas fa-check-circle" style="color:#16a34a;margin-top:3px;flex-shrink:0"></i>
-            <span style="font-size:15px;color:#374151">Clientes potenciales te contactan directamente por teléfono o email</span>
+            <span style="font-size:15px;color:#374151">{{ 'Potential clients contact you directly by phone or email' if lang=='en' else 'Clientes potenciales te contactan directamente por teléfono o email' }}</span>
           </div>
           <div class="d-flex align-items-start gap-2">
             <i class="fas fa-check-circle" style="color:#16a34a;margin-top:3px;flex-shrink:0"></i>
-            <span style="font-size:15px;color:#374151">Muestra tus especialidades, experiencia y área de práctica</span>
+            <span style="font-size:15px;color:#374151">{{ 'Showcase your specialties, experience and practice area' if lang=='en' else 'Muestra tus especialidades, experiencia y área de práctica' }}</span>
           </div>
           <div class="d-flex align-items-start gap-2">
             <i class="fas fa-check-circle" style="color:#16a34a;margin-top:3px;flex-shrink:0"></i>
-            <span style="font-size:15px;color:#374151">Cancela en cualquier momento con 1 mes de aviso</span>
+            <span style="font-size:15px;color:#374151">{{ 'Cancel anytime with 1 month notice' if lang=='en' else 'Cancela en cualquier momento con 1 mes de aviso' }}</span>
           </div>
         </div>
         <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-5 fw-bold" style="border-radius:10px">
-          Crear mi perfil
+          {{ 'Create my profile' if lang=='en' else 'Crear mi perfil' }}
         </a>
-        <p class="text-muted small mt-2">Sin permanencia &middot; Cancela cuando quieras</p>
+        <p class="text-muted small mt-2">{{ 'No commitment · Cancel anytime' if lang=='en' else 'Sin permanencia · Cancela cuando quieras' }}</p>
       </div>
       <div class="col-md-5 offset-md-1">
         <div style="background:#fff;border-radius:20px;padding:40px;box-shadow:0 8px 40px rgba(0,0,0,.1);text-align:center">
-          <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Suscripción mensual</div>
+          <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">{{ 'Monthly subscription' if lang=='en' else 'Suscripción mensual' }}</div>
           <div style="font-size:56px;font-weight:900;color:#1a3a5c;line-height:1">$40</div>
-          <div style="font-size:15px;color:#6b7280;margin-bottom:24px">USD / mes</div>
+          <div style="font-size:15px;color:#6b7280;margin-bottom:24px">USD / {{ 'month' if lang=='en' else 'mes' }}</div>
           <div class="d-flex flex-column gap-2 text-start mb-4">
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> Perfil completo con foto y descripción</div>
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> Listado en todas las especialidades que elijas</div>
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> Visible en Bogotá, Medellín, Cali y toda Colombia</div>
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> Contacto directo desde tu perfil</div>
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> Estadísticas de visitas y contactos</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Full profile with photo and description' if lang=='en' else 'Perfil completo con foto y descripción' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Listed in all specialties you choose' if lang=='en' else 'Listado en todas las especialidades que elijas' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Visible in Bogotá, Medellín, Cali and all Colombia' if lang=='en' else 'Visible en Bogotá, Medellín, Cali y toda Colombia' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Direct contact from your profile' if lang=='en' else 'Contacto directo desde tu perfil' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Visit and contact statistics' if lang=='en' else 'Estadísticas de visitas y contactos' }}</div>
           </div>
           <a href="{{ url_for('auth.register') }}" class="btn btn-warning btn-lg w-100 fw-bold" style="border-radius:10px;font-size:16px">
-            Empezar ahora
+            {{ 'Get started now' if lang=='en' else 'Empezar ahora' }}
           </a>
-          <p style="font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">Cancela en cualquier momento &middot; 1 mes de aviso</p>
+          <p style="font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">{{ 'Cancel anytime · 1 month notice' if lang=='en' else 'Cancela en cualquier momento · 1 mes de aviso' }}</p>
         </div>
       </div>
     </div>
@@ -215,28 +215,28 @@
 <!-- CÓMO FUNCIONA -->
 <section style="padding:70px 0;background:#fff">
   <div class="container text-center">
-    <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c;margin-bottom:8px">Cómo funciona</h2>
-    <p class="text-muted mb-5">Para abogados que quieren más clientes</p>
+    <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c;margin-bottom:8px">{{ 'How it works' if lang=='en' else 'Cómo funciona' }}</h2>
+    <p class="text-muted mb-5">{{ 'For lawyers who want more clients' if lang=='en' else 'Para abogados que quieren más clientes' }}</p>
     <div class="row g-4 justify-content-center">
       <div class="col-md-3">
         <div style="width:52px;height:52px;border-radius:50%;background:#1a3a5c;color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">1</div>
-        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Crea tu cuenta</h6>
-        <p class="text-muted small mb-0">Regístrate con tu email y crea tu perfil de abogado en minutos.</p>
+        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Create your account' if lang=='en' else 'Crea tu cuenta' }}</h6>
+        <p class="text-muted small mb-0">{{ 'Sign up with your email and create your lawyer profile in minutes.' if lang=='en' else 'Regístrate con tu email y crea tu perfil de abogado en minutos.' }}</p>
       </div>
       <div class="col-md-3">
         <div style="width:52px;height:52px;border-radius:50%;background:#1a3a5c;color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">2</div>
-        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Completa tu perfil</h6>
-        <p class="text-muted small mb-0">Agrega tu foto, especialidades, descripción y datos de contacto.</p>
+        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Complete your profile' if lang=='en' else 'Completa tu perfil' }}</h6>
+        <p class="text-muted small mb-0">{{ 'Add your photo, specialties, description and contact details.' if lang=='en' else 'Agrega tu foto, especialidades, descripción y datos de contacto.' }}</p>
       </div>
       <div class="col-md-3">
         <div style="width:52px;height:52px;border-radius:50%;background:#1a3a5c;color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">3</div>
-        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Activa tu suscripción</h6>
-        <p class="text-muted small mb-0">Paga $40 USD/mes con tarjeta. Tu perfil queda visible de inmediato.</p>
+        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Activate your subscription' if lang=='en' else 'Activa tu suscripción' }}</h6>
+        <p class="text-muted small mb-0">{{ 'Pay $40 USD/month by card. Your profile goes live immediately.' if lang=='en' else 'Paga $40 USD/mes con tarjeta. Tu perfil queda visible de inmediato.' }}</p>
       </div>
       <div class="col-md-3">
         <div style="width:52px;height:52px;border-radius:50%;background:#1a3a5c;color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">4</div>
-        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">Recibe clientes</h6>
-        <p class="text-muted small mb-0">Los clientes te encuentran y te contactan directamente.</p>
+        <h6 style="font-weight:700;color:#1a3a5c;margin-bottom:6px">{{ 'Receive clients' if lang=='en' else 'Recibe clientes' }}</h6>
+        <p class="text-muted small mb-0">{{ 'Clients find you and contact you directly.' if lang=='en' else 'Los clientes te encuentran y te contactan directamente.' }}</p>
       </div>
     </div>
   </div>
@@ -245,12 +245,12 @@
 <!-- CTA FINAL -->
 <section style="background:#1a3a5c;padding:60px 0;text-align:center">
   <div class="container">
-    <h2 style="color:#fff;font-size:2rem;font-weight:800;margin-bottom:12px">¿Listo para conseguir más clientes?</h2>
-    <p style="color:rgba(255,255,255,.75);margin-bottom:28px;font-size:1.05rem">Únete a los abogados que ya están creciendo con Abogadoya</p>
+    <h2 style="color:#fff;font-size:2rem;font-weight:800;margin-bottom:12px">{{ 'Ready to get more clients?' if lang=='en' else '¿Listo para conseguir más clientes?' }}</h2>
+    <p style="color:rgba(255,255,255,.75);margin-bottom:28px;font-size:1.05rem">{{ 'Join the lawyers already growing with Abogadoya' if lang=='en' else 'Únete a los abogados que ya están creciendo con Abogadoya' }}</p>
     <a href="{{ url_for('auth.register') }}" class="btn btn-warning btn-lg fw-bold" style="border-radius:10px;font-size:16px;padding:14px 40px">
-      Crear mi perfil &mdash; $40/mes
+      {{ 'Create my profile — $40/month' if lang=='en' else 'Crear mi perfil — $40/mes' }}
     </a>
-    <p style="color:rgba(255,255,255,.5);margin-top:14px;font-size:13px">Sin permanencia &middot; Cancela con 1 mes de aviso</p>
+    <p style="color:rgba(255,255,255,.5);margin-top:14px;font-size:13px">{{ 'No commitment · Cancel with 1 month notice' if lang=='en' else 'Sin permanencia · Cancela con 1 mes de aviso' }}</p>
   </div>
 </section>
 
