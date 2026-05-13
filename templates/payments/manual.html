@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Request received' if lang=='en' else 'Solicitud recibida' }} — losabogados.com.co{% endblock %}
+{% block title %}{{ 'Request received' if lang=='en' else 'Solicitud recibida' }} — abogadoya.com.co{% endblock %}
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center">
             <i class="fas fa-clock text-warning fa-4x mb-3"></i>
             <h2 class="fw-bold">{{ 'Request received' if lang=='en' else 'Solicitud recibida' }}</h2>
-            <p class="text-muted">{{ 'Your request for' if lang=='en' else 'Tu solicitud para' }} <strong>losabogados.com.co/bufetes/{{ profile.slug }}</strong> {{ 'has been registered.' if lang=='en' else 'ha sido registrada.' }}</p>
+            <p class="text-muted">{{ 'Your request for' if lang=='en' else 'Tu solicitud para' }} <strong>abogadoya.com.co/bufetes/{{ profile.slug }}</strong> {{ 'has been registered.' if lang=='en' else 'ha sido registrada.' }}</p>
             <div class="card border-0 shadow-sm mt-4 text-start">
                 <div class="card-body">
                     <h6 class="fw-bold">{{ 'To activate your profile, send a payment of' if lang=='en' else 'Para activar tu perfil, realiza el pago de' }} <span class="text-primary">${{ opening_fee }} USD</span></h6>
