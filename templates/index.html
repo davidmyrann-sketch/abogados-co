@@ -256,30 +256,27 @@
         <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-5 fw-bold" style="border-radius:10px;font-size:16px">
           {{ 'Claim my spot now' if lang=='en' else 'Reclamar mi lugar ahora' }}
         </a>
-        <p class="text-muted small mt-2">{{ 'No commitment · Cancel anytime with 1 month notice' if lang=='en' else 'Sin permanencia · Cancela cuando quieras con 1 mes de aviso' }}</p>
       </div>
 
       <!-- Pricing card — Hormozi offer + Sutherland reframe -->
       <div class="col-md-5 offset-md-1">
-        <div style="background:#fff;border-radius:20px;padding:40px;box-shadow:0 8px 40px rgba(0,0,0,.12);text-align:center;position:relative">
-          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;border-radius:20px;padding:4px 18px;font-size:12px;font-weight:700;white-space:nowrap">
-            {{ '✓ MOST POPULAR' if lang=='en' else '✓ MÁS POPULAR' }}
-          </div>
+        <div style="background:#fff;border-radius:20px;padding:40px;box-shadow:0 8px 40px rgba(0,0,0,.12);text-align:center">
           <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">{{ 'Monthly subscription' if lang=='en' else 'Suscripción mensual' }}</div>
           <div style="font-size:60px;font-weight:900;color:#1a3a5c;line-height:1">$40</div>
           <div style="font-size:15px;color:#6b7280;margin-bottom:4px">USD / {{ 'month' if lang=='en' else 'mes' }}</div>
           <div style="font-size:12px;color:#9ca3af;margin-bottom:24px">= $1.33 / {{ 'day' if lang=='en' else 'día' }}</div>
           <div class="d-flex flex-column gap-2 text-start mb-4">
             <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Full profile: photo, bio, specialties' if lang=='en' else 'Perfil completo: foto, descripción, especialidades' }}</div>
-            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Visible in Google + Abogadoya searches' if lang=='en' else 'Visible en Google + búsquedas en Abogadoya' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Visible in Abogadoya searches' if lang=='en' else 'Visible en búsquedas en Abogadoya' }}</div>
             <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Direct messages from potential clients' if lang=='en' else 'Mensajes directos de clientes potenciales' }}</div>
             <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Services and fee ranges display' if lang=='en' else 'Servicios y rangos de honorarios' }}</div>
             <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Visit and contact statistics' if lang=='en' else 'Estadísticas de visitas y contactos' }}</div>
+            <div class="d-flex align-items-center gap-2" style="font-size:14px;color:#374151"><i class="fas fa-check" style="color:#16a34a;font-size:12px"></i> {{ 'Cancel anytime with 1 month notice' if lang=='en' else 'Cancela cuando quieras con 1 mes de aviso' }}</div>
           </div>
           <a href="{{ url_for('auth.register') }}" class="btn btn-warning btn-lg w-100 fw-bold" style="border-radius:10px;font-size:16px">
             {{ 'Start now — 10 min setup' if lang=='en' else 'Empezar ahora — 10 min de configuración' }}
           </a>
-          <p style="font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">{{ 'Cancel anytime · 1 month notice · Stripe-secured' if lang=='en' else 'Cancela cuando quieras · 1 mes de aviso · Pago seguro Stripe' }}</p>
+          <p style="font-size:12px;color:#9ca3af;margin-top:12px;margin-bottom:0">{{ 'Stripe-secured payment' if lang=='en' else 'Pago seguro con Stripe' }}</p>
         </div>
 
         <!-- Sutherland reframe -->
