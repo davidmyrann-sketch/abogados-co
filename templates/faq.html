@@ -1,37 +1,205 @@
 {% extends "base.html" %}
 {% block title %}{{ 'FAQ' if lang=='en' else 'Preguntas frecuentes' }} — Abogadoya.com.co{% endblock %}
+{% block description %}{% if lang=='en' %}Frequently asked questions about Abogadoya.com.co — for lawyers listing their profile and for clients searching for legal representation in Colombia.{% else %}Preguntas frecuentes sobre Abogadoya.com.co — para abogados que publican su perfil y para clientes que buscan representación legal en Colombia.{% endif %}{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1 class="fw-bold mb-4">{{ 'Frequently asked questions' if lang=='en' else 'Preguntas frecuentes' }}</h1>
-            <div class="accordion" id="faq">
-                <div class="accordion-item border-0 shadow-sm mb-2">
-                    <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#q1">{{ 'How do I list my lawyer profile?' if lang=='en' else '¿Cómo publico mi perfil de abogado?' }}</button></h2>
-                    <div id="q1" class="accordion-collapse collapse show">
-                        <div class="accordion-body text-muted">{{ 'Create an account, fill in your firm details, choose a plan and pay the $100 USD opening fee (includes the first month). Your profile will be live in minutes.' if lang=='en' else 'Crea una cuenta, completa los datos de tu bufete o despacho, elige tu plan y realiza el pago de apertura de $100 USD (incluye el primer mes). Tu perfil estará activo en minutos.' }}</div>
-                    </div>
-                </div>
-                <div class="accordion-item border-0 shadow-sm mb-2">
-                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">{{ 'What does the $100 USD opening fee cover?' if lang=='en' else '¿Qué incluye la tarifa de apertura de $100 USD?' }}</button></h2>
-                    <div id="q2" class="accordion-collapse collapse">
-                        <div class="accordion-body text-muted">{{ 'The opening fee covers the first full month on the plan you choose. From month 2 onwards, you only pay the monthly fee ($5, $20 or $35).' if lang=='en' else 'La tarifa de apertura cubre el primer mes completo en el plan que elijas. A partir del mes 2, pagas únicamente la tarifa mensual de tu plan ($5, $20 o $35).' }}</div>
-                    </div>
-                </div>
-                <div class="accordion-item border-0 shadow-sm mb-2">
-                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q3">{{ 'Can I reclaim my old URL?' if lang=='en' else '¿Puedo recuperar mi URL anterior?' }}</button></h2>
-                    <div id="q3" class="accordion-collapse collapse">
-                        <div class="accordion-body text-muted">{{ 'Yes. If your firm was on our platform before, your original URL is reserved. Search for it directly or contact us and we will help you recover it.' if lang=='en' else 'Sí. Si tu bufete estuvo en nuestra plataforma anteriormente, tu URL original está reservada. Búscala directamente o contáctanos y te ayudamos a recuperarla.' }}</div>
-                    </div>
-                </div>
-                <div class="accordion-item border-0 shadow-sm mb-2">
-                    <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q4">{{ 'Can I cancel at any time?' if lang=='en' else '¿Puedo cancelar en cualquier momento?' }}</button></h2>
-                    <div id="q4" class="accordion-collapse collapse">
-                        <div class="accordion-body text-muted">{{ 'Yes. You can delete your profile at any time from your user panel. The URL will become available for other lawyers.' if lang=='en' else 'Sí. Puedes eliminar tu perfil cuando quieras desde tu panel de usuario. La URL quedará disponible para otros abogados.' }}</div>
-                    </div>
-                </div>
-            </div>
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+
+      <h1 class="fw-bold mb-2" style="color:var(--c-primary)">{{ 'Frequently asked questions' if lang=='en' else 'Preguntas frecuentes' }}</h1>
+      <p class="text-muted mb-5">{{ 'Everything you need to know about Abogadoya — for lawyers and for clients.' if lang=='en' else 'Todo lo que necesitas saber sobre Abogadoya — para abogados y para clientes.' }}</p>
+
+      <!-- ── FOR LAWYERS ─────────────────────────────── -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--c-primary);color:#fff;display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-user-tie" style="font-size:15px"></i>
         </div>
+        <h2 style="font-size:1.3rem;font-weight:800;color:var(--c-primary);margin:0">{{ 'For lawyers' if lang=='en' else 'Para abogados' }}</h2>
+      </div>
+
+      <div class="accordion mb-5" id="faq-lawyers">
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#l1">
+              {{ 'How do I list my profile?' if lang=='en' else '¿Cómo publico mi perfil?' }}
+            </button>
+          </h3>
+          <div id="l1" class="accordion-collapse collapse show">
+            <div class="accordion-body text-muted">
+              {{ 'Create an account, fill in your firm details, pay the monthly fee of $40 USD. Your profile will be live in minutes.' if lang=='en' else 'Crea una cuenta, completa los datos de tu bufete o despacho, paga la cuota mensual de $40 USD. Tu perfil estará activo en minutos.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#l2">
+              {{ 'What does the $40/month subscription include?' if lang=='en' else '¿Qué incluye la suscripción de $40/mes?' }}
+            </button>
+          </h3>
+          <div id="l2" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Your subscription includes a full public profile with photo, description, specialties, services and contact details. You appear in searches by city and specialty, both within Abogadoya and on Google. Clients can contact you directly by phone, email or through the platform\'s messaging system — at no extra cost.' if lang=='en' else 'Tu suscripción incluye un perfil público completo con foto, descripción, especialidades, servicios y datos de contacto. Apareces en búsquedas por ciudad y especialidad, tanto dentro de Abogadoya como en Google. Los clientes pueden contactarte directamente por teléfono, email o a través del sistema de mensajes de la plataforma, sin coste adicional.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#l3">
+              {{ 'Does Abogadoya take a commission on my fees?' if lang=='en' else '¿Abogadoya cobra comisión sobre mis honorarios?' }}
+            </button>
+          </h3>
+          <div id="l3" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'No. Abogadoya only charges the flat $40 USD/month listing fee. All payments for legal services are agreed directly between you and your client, and settled through whatever payment method you both choose. Abogadoya never takes a cut of your fees.' if lang=='en' else 'No. Abogadoya únicamente cobra la cuota plana de $40 USD/mes por estar listado. Todos los pagos por servicios legales se acuerdan directamente entre tú y tu cliente, y se realizan a través del método de pago que ambos elijan. Abogadoya no cobra ninguna comisión sobre tus honorarios.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#l4">
+              {{ 'How does Abogadoya promote my profile?' if lang=='en' else '¿Cómo promociona Abogadoya mi perfil?' }}
+            </button>
+          </h3>
+          <div id="l4" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Abogadoya continuously runs paid advertising campaigns on Meta (Facebook and Instagram) and Google Ads targeting people in Colombia searching for legal help. Over time we also work on organic visibility: SEO, content and local search presence — both nationally and internationally. When someone searches "abogado [your city]" or a legal specialty, we work to make sure Abogadoya — and your profile within it — shows up.' if lang=='en' else 'Abogadoya realiza de forma continua campañas de publicidad pagada en Meta (Facebook e Instagram) y Google Ads, dirigidas a personas en Colombia que buscan ayuda legal. También trabajamos progresivamente en visibilidad orgánica: SEO, contenido y presencia en búsqueda local, tanto a nivel nacional como internacional. Cuando alguien busca "abogado [tu ciudad]" o una especialidad legal, trabajamos para que Abogadoya — y tu perfil dentro de ella — aparezcan en los resultados.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#l5">
+              {{ 'How do I interact with clients through the platform?' if lang=='en' else '¿Cómo interactúo con los clientes a través de la plataforma?' }}
+            </button>
+          </h3>
+          <div id="l5" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Clients can send you a message directly from your profile page. You receive it in your Abogadoya inbox and can reply by email or through the platform. From that point, the relationship is entirely between you and the client — you agree on the scope of work, fees and payment method directly. Abogadoya does not mediate, intervene or charge anything for that interaction.' if lang=='en' else 'Los clientes pueden enviarte un mensaje directamente desde la página de tu perfil. Lo recibes en tu bandeja de Abogadoya y puedes responder por email o a través de la plataforma. A partir de ahí, la relación es completamente entre tú y el cliente: acordáis el alcance del trabajo, los honorarios y el método de pago directamente. Abogadoya no media, no interviene ni cobra nada por esa interacción.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#l6">
+              {{ 'Can I cancel my subscription?' if lang=='en' else '¿Puedo cancelar mi suscripción?' }}
+            </button>
+          </h3>
+          <div id="l6" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Yes. You can cancel at any time from your user panel with 1 month notice. Your profile stays active until the end of the current billing period. You will not receive a refund for the remaining days of the month.' if lang=='en' else 'Sí. Puedes cancelar en cualquier momento desde tu panel de usuario con 1 mes de aviso. Tu perfil permanece activo hasta el final del período de facturación en curso. No se realizan reembolsos por los días restantes del mes.' }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── FOR CLIENTS ─────────────────────────────── -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-user" style="font-size:15px"></i>
+        </div>
+        <h2 style="font-size:1.3rem;font-weight:800;color:var(--c-primary);margin:0">{{ 'For clients' if lang=='en' else 'Para clientes' }}</h2>
+      </div>
+
+      <div class="accordion mb-5" id="faq-clients">
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c1">
+              {{ 'Is Abogadoya free for clients?' if lang=='en' else '¿Abogadoya es gratuito para los clientes?' }}
+            </button>
+          </h3>
+          <div id="c1" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Yes, completely free. Searching for a lawyer, viewing profiles and sending messages costs nothing. Abogadoya is funded by the lawyers who list on the platform, not by clients.' if lang=='en' else 'Sí, completamente gratis. Buscar abogado, ver perfiles y enviar mensajes no tiene ningún coste. Abogadoya se financia con las cuotas de los abogados listados, no con cobros a los clientes.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c2">
+              {{ 'How do I contact a lawyer?' if lang=='en' else '¿Cómo contacto a un abogado?' }}
+            </button>
+          </h3>
+          <div id="c2" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Search by city or specialty, open the lawyer\'s profile and use the contact form, phone number or email shown. The message goes directly to the lawyer — there is no intermediary.' if lang=='en' else 'Busca por ciudad o especialidad, abre el perfil del abogado y utiliza el formulario de contacto, el teléfono o el email que aparece. El mensaje llega directamente al abogado, sin intermediarios.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c3">
+              {{ 'Does Abogadoya handle payments for legal services?' if lang=='en' else '¿Abogadoya gestiona los pagos de los servicios legales?' }}
+            </button>
+          </h3>
+          <div id="c3" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'No. All fees for legal work are agreed and paid directly between you and the lawyer, through whatever payment method you both agree on. Abogadoya does not take any commission or percentage from legal fees — from either the client or the lawyer.' if lang=='en' else 'No. Todos los honorarios por servicios legales se acuerdan y se pagan directamente entre tú y el abogado, a través del método de pago que ambos acuerden. Abogadoya no cobra ninguna comisión ni porcentaje sobre los honorarios legales, ni al cliente ni al abogado.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c4">
+              {{ 'What happens after I contact a lawyer?' if lang=='en' else '¿Qué pasa después de contactar a un abogado?' }}
+            </button>
+          </h3>
+          <div id="c4" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'The lawyer receives your message and will get back to you to discuss your case. From that point everything is handled directly between you: the scope of the work, fees, contracts and payment. Abogadoya is the directory that connects you — the ongoing relationship is entirely yours.' if lang=='en' else 'El abogado recibe tu mensaje y se pondrá en contacto contigo para hablar de tu caso. A partir de ahí todo se gestiona directamente entre vosotros: el alcance del trabajo, los honorarios, los contratos y el pago. Abogadoya es el directorio que os conecta — la relación posterior es completamente vuestra.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c5">
+              {{ 'Are the lawyers on the platform verified?' if lang=='en' else '¿Los abogados de la plataforma están verificados?' }}
+            </button>
+          </h3>
+          <div id="c5" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Every lawyer on Abogadoya has registered with real identity and contact data. We recommend you always verify the lawyer\'s bar registration directly with the relevant professional body before engaging their services.' if lang=='en' else 'Cada abogado en Abogadoya se ha registrado con datos reales de identidad y contacto. Te recomendamos que siempre verifiques la colegiación del abogado directamente con el colegio profesional correspondiente antes de contratar sus servicios.' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item border-0 shadow-sm mb-2">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c6">
+              {{ 'Can I search for lawyers who speak English?' if lang=='en' else '¿Puedo buscar abogados que hablen inglés?' }}
+            </button>
+          </h3>
+          <div id="c6" class="accordion-collapse collapse">
+            <div class="accordion-body text-muted">
+              {{ 'Yes. Use the search bar and type "English" or the specific language you need. Many lawyers in Bogotá, Medellín and Cali offer services in English and other languages.' if lang=='en' else 'Sí. Utiliza la barra de búsqueda y escribe "inglés" o el idioma que necesites. Muchos abogados en Bogotá, Medellín y Cali ofrecen servicios en inglés y otros idiomas.' }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Still have questions -->
+      <div style="background:var(--c-bg-blue);border-radius:14px;padding:32px;text-align:center">
+        <h3 style="font-size:1.2rem;font-weight:700;color:var(--c-primary);margin-bottom:8px">{{ 'Still have questions?' if lang=='en' else '¿Tienes más preguntas?' }}</h3>
+        <p class="text-muted small mb-3">{{ 'Write to us and we will get back to you within 24 hours.' if lang=='en' else 'Escríbenos y te respondemos en menos de 24 horas.' }}</p>
+        <a href="mailto:soporte@abogadoya.com.co" class="btn btn-primary px-4">
+          <i class="fas fa-envelope me-2"></i>soporte@abogadoya.com.co
+        </a>
+      </div>
+
     </div>
+  </div>
 </div>
 {% endblock %}
