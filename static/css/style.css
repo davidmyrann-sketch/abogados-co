@@ -99,6 +99,16 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
+/* On dark backgrounds, headings inherit white from parent */
+[style*="background:linear-gradient"] h1,
+[style*="background:linear-gradient"] h2,
+[style*="background:#1a3a5c"] h1,
+[style*="background:#1a3a5c"] h2,
+.bg-primary h1,
+.bg-primary h2 {
+  color: #ffffff;
+}
+
 /* --- LINKS ----------------------------------------- */
 a { transition: color var(--tr); }
 
