@@ -126,7 +126,7 @@ def cancel_subscription(profile_id):
             db.session.commit()
             flash('Tu suscripción se cancelará al final del período de facturación actual. Tu perfil seguirá activo hasta entonces.', 'info')
         except Exception as e:
-            flash('Error al cancelar. Contáctanos en soporte@abogadoya.com.co', 'danger')
+            flash('Error al cancelar. Contáctanos en contact@abogadoya.com.co', 'danger')
     else:
         profile.status = 'cancelled'
         profile.cancelled_at = datetime.utcnow()
