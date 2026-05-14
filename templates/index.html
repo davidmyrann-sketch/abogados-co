@@ -63,7 +63,7 @@
       🏆 {{ 'THE #1 LAWYER DIRECTORY IN COLOMBIA' if lang=='en' else 'EL DIRECTORIO JURÍDICO #1 DE COLOMBIA' }}
     </span>
     <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:800;margin:20px 0 16px;line-height:1.15">
-      {{ 'Don\'t risk your case<br>with the wrong lawyer' if lang=='en' else 'No arriesgues tu caso<br>con el abogado equivocado' }}
+      {{ ('Don\'t risk your case<br>with the wrong lawyer' if lang=='en' else 'No arriesgues tu caso<br>con el abogado equivocado') | safe }}
     </h1>
     <p style="font-size:1.1rem;opacity:.85;max-width:560px;margin:0 auto 36px">
       {{ 'Verified lawyers across Colombia. Search by city, specialty or name — and contact them directly before deciding.' if lang=='en' else 'Abogados verificados en toda Colombia. Busca por ciudad, especialidad o nombre — y contáctalos directamente antes de decidir.' }}
@@ -218,7 +218,7 @@
     <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:12px;padding:18px 24px;margin-bottom:48px;display:flex;align-items:center;gap:14px;max-width:700px;margin-left:auto;margin-right:auto;margin-bottom:48px">
       <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:22px;flex-shrink:0"></i>
       <p style="margin:0;font-size:15px;color:#92400e;font-weight:500">
-        {{ '<strong>While you\'re not listed here</strong>, potential clients are finding and hiring your competitors.' if lang=='en' else '<strong>Mientras tú no estás aquí</strong>, clientes potenciales están encontrando y contratando a tu competencia.' }}
+        {{ ('<strong>While you\'re not listed here</strong>, potential clients are finding and hiring your competitors.' if lang=='en' else '<strong>Mientras tú no estás aquí</strong>, clientes potenciales están encontrando y contratando a tu competencia.') | safe }}
       </p>
     </div>
 
@@ -226,10 +226,10 @@
       <div class="col-md-6">
         <span style="background:#2563eb;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700">{{ 'FOR LAWYERS' if lang=='en' else 'PARA ABOGADOS' }}</span>
         <h2 style="font-size:2rem;font-weight:800;color:#1a3a5c;margin:16px 0 14px">
-          {{ 'Position yourself as the expert.<br>Let clients come to you.' if lang=='en' else 'Posiciónate como el experto.<br>Que los clientes lleguen a ti.' }}
+          {{ ('Position yourself as the expert.<br>Let clients come to you.' if lang=='en' else 'Posiciónate como el experto.<br>Que los clientes lleguen a ti.') | safe }}
         </h2>
         <p class="text-muted mb-4">
-          {{ 'People searching for a lawyer are already decided — they just need to choose <em>which</em> lawyer. A strong profile on Abogadoya makes sure they choose you.' if lang=='en' else 'Las personas que buscan abogado ya decidieron contratar uno — solo necesitan elegir <em>cuál</em>. Un perfil sólido en Abogadoya asegura que te elijan a ti.' }}
+          {{ ('People searching for a lawyer are already decided — they just need to choose <em>which</em> lawyer. A strong profile on Abogadoya makes sure they choose you.' if lang=='en' else 'Las personas que buscan abogado ya decidieron contratar uno — solo necesitan elegir <em>cuál</em>. Un perfil sólido en Abogadoya asegura que te elijan a ti.') | safe }}
         </p>
         <div class="d-flex flex-column gap-3 mb-4">
           <div class="d-flex align-items-start gap-2">
@@ -285,7 +285,7 @@
         <!-- Sutherland reframe -->
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;margin-top:16px">
           <p style="margin:0;font-size:13px;color:#166534;font-weight:500">
-            💡 {{ '<strong>$40/month</strong> is less than what most lawyers spend on one networking event — and it works 24/7.' if lang=='en' else '<strong>$40/mes</strong> es menos de lo que la mayoría de abogados gasta en un solo evento de networking — y esto trabaja 24/7.' }}
+            💡 {{ ('<strong>$40/month</strong> is less than what most lawyers spend on one networking event — and it works 24/7.' if lang=='en' else '<strong>$40/mes</strong> es menos de lo que la mayoría de abogados gasta en un solo evento de networking — y esto trabaja 24/7.') | safe }}
           </p>
         </div>
       </div>
@@ -365,7 +365,7 @@
   <div class="container">
     <p style="color:#fbbf24;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">{{ 'Your next client is searching right now' if lang=='en' else 'Tu próximo cliente está buscando ahora mismo' }}</p>
     <h2 style="color:#fff;font-size:2.2rem;font-weight:800;margin-bottom:12px;line-height:1.2">
-      {{ 'Build the legal practice<br>you always wanted.' if lang=='en' else 'Construye la práctica legal<br>que siempre quisiste.' }}
+      {{ ('Build the legal practice<br>you always wanted.' if lang=='en' else 'Construye la práctica legal<br>que siempre quisiste.') | safe }}
     </h2>
     <p style="color:rgba(255,255,255,.7);margin-bottom:32px;font-size:1.05rem;max-width:500px;margin-left:auto;margin-right:auto">
       {{ 'Join the lawyers already growing their client base with Abogadoya. $40/month. No commitment. Cancel anytime.' if lang=='en' else 'Únete a los abogados que ya están creciendo con Abogadoya. $40/mes. Sin permanencia. Cancela cuando quieras.' }}
