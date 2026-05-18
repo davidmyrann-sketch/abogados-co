@@ -4,6 +4,29 @@
 
 {% block content %}
 <div class="container py-4">
+
+    {% if profile.status == 'available' %}
+    <div class="alert alert-warning d-flex align-items-start gap-3 mb-4" role="alert">
+        <i class="fas fa-user-lock fs-4 mt-1"></i>
+        <div>
+            <strong>{% if lang=='en' %}This profile has not been claimed yet{% else %}Este perfil aún no ha sido reclamado{% endif %}</strong><br>
+            <span class="small">
+                {% if lang=='en' %}
+                Are you this lawyer? Claim your profile to start receiving clients through Abogadoya.com.co.
+                {% else %}
+                ¿Eres este abogado? Reclama tu perfil para empezar a recibir clientes a través de Abogadoya.com.co.
+                {% endif %}
+            </span>
+            <div class="mt-2">
+                <a href="{{ url_for('profiles.claim_profile', slug=profile.slug) }}" class="btn btn-warning btn-sm fw-bold">
+                    <i class="fas fa-flag me-1"></i>
+                    {% if lang=='en' %}Claim this profile{% else %}Reclamar este perfil{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">{{ 'Home' if lang=='en' else 'Inicio' }}</a></li>
@@ -48,7 +71,7 @@
 
                     {% if profile.description %}
                     <h5 class="fw-bold">{{ 'About us' if lang=='en' else 'Sobre nosotros' }}</h5>
-                    <p>{{ profile.description }}</p>
+                    <p>{% if lang == 'en' and profile.description_en %}{{ profile.description_en }}{% elif lang == 'es' and profile.description_es %}{{ profile.description_es }}{% else %}{{ profile.description }}{% endif %}</p>
                     {% endif %}
                 </div>
             </div>
@@ -60,7 +83,7 @@
                     {% for svc in profile.services %}
                     <div class="mb-4 {% if not loop.last %}border-bottom pb-3{% endif %}">
                         <div class="d-flex justify-content-between align-items-start">
-                            <h6 class="fw-bold mb-1">{{ svc.title }}</h6>
+                            <h6 class="fw-bold mb-1">{% if lang == 'en' and svc.title_en %}{{ svc.title_en }}{% elif lang == 'es' and svc.title_es %}{{ svc.title_es }}{% else %}{{ svc.title }}{% endif %}</h6>
                             {% if svc.price_from or svc.price_to %}
                             <span class="badge bg-light text-dark border ms-2 text-nowrap">
                                 {% if svc.price_from and svc.price_to %}
@@ -74,7 +97,7 @@
                             {% endif %}
                         </div>
                         {% if svc.description %}
-                        <p class="text-muted small mb-0">{{ svc.description }}</p>
+                        <p class="text-muted small mb-0">{% if lang == 'en' and svc.description_en %}{{ svc.description_en }}{% elif lang == 'es' and svc.description_es %}{{ svc.description_es }}{% else %}{{ svc.description }}{% endif %}</p>
                         {% endif %}
                     </div>
                     {% endfor %}
@@ -103,7 +126,8 @@
                 <div class="card-body">
                     <h5 class="fw-bold mb-3">{{ 'Contact' if lang=='en' else 'Contacto' }}</h5>
                     {% if profile.phone %}
-                    <p><i class="fas fa-phone text-primary me-2"></i><a href="tel:{{ profile.phone }}">{{ profile.phone }}</a></p>
+                    {% set full_phone = (profile.phone_country_code or '+57') + profile.phone %}
+                    <p><i class="fas fa-phone text-primary me-2"></i><a href="tel:{{ full_phone }}">{{ full_phone }}</a></p>
                     {% endif %}
                     {% if profile.email %}
                     <p><i class="fas fa-envelope text-primary me-2"></i><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>
@@ -120,6 +144,28 @@
                 </div>
             </div>
 
+            {% if profile.status == 'available' %}
+            <div class="card border-0 shadow-sm mb-3" style="border-left: 4px solid #ffc107 !important;">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-user-lock text-warning mb-3" style="font-size: 2rem;"></i>
+                    <h6 class="fw-bold">{% if lang=='en' %}Unclaimed profile{% else %}Perfil sin reclamar{% endif %}</h6>
+                    <p class="text-muted small mb-3">
+                        {% if lang=='en' %}
+                        This profile has not been activated yet. If you are this lawyer, claim it to start receiving contacts.
+                        {% else %}
+                        Este perfil aún no ha sido activado. Si eres este abogado, reclámaloo para empezar a recibir contactos.
+                        {% endif %}
+                    </p>
+                    <a href="{{ url_for('profiles.claim_profile', slug=profile.slug) }}" class="btn btn-warning btn-sm w-100 fw-bold mb-2">
+                        <i class="fas fa-flag me-1"></i>
+                        {% if lang=='en' %}Claim this profile{% else %}Reclamar este perfil{% endif %}
+                    </a>
+                    <p class="text-muted text-center small mb-0">
+                        {% if lang=='en' %}Free registration{% else %}Registro gratuito{% endif %}
+                    </p>
+                </div>
+            </div>
+            {% else %}
             <div class="card border-0 shadow-sm mb-3 border-primary">
                 <div class="card-body">
                     <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane me-2 text-primary"></i>{{ 'Contact this lawyer' if lang=='en' else 'Contactar abogado' }}</h5>
@@ -143,6 +189,7 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
 
             {% if current_user.is_authenticated and (current_user.id == profile.user_id or current_user.is_admin) %}
             <div class="card border-warning mb-3">

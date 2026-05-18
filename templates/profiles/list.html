@@ -57,6 +57,9 @@
                             {% if profile.specialties %}
                             <div class="mb-2">{% for s in profile.specialties[:2] %}<span class="badge bg-light text-dark border me-1" style="font-size:0.7rem;">{{ spec_name(s) }}</span>{% endfor %}</div>
                             {% endif %}
+                            {% if profile.status == 'available' %}
+                            <div><span class="badge bg-warning text-dark" style="font-size:0.65rem;"><i class="fas fa-user-lock me-1"></i>{{ 'Unclaimed' if lang=='en' else 'Sin reclamar' }}</span></div>
+                            {% endif %}
                         </div>
                         <div class="card-footer bg-transparent border-0 pt-0">
                             <a href="{{ url_for('profiles.profile_detail', slug=profile.slug) }}" class="btn btn-outline-primary btn-sm w-100">{{ 'View profile' if lang=='en' else 'Ver perfil' }}</a>

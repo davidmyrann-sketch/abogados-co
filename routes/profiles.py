@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, abort, session
 from flask_login import login_required, current_user
 import resend
-from models import db, Profile, City, Specialty, ProfileImage, Payment, ProfileService, Message
+from models import db, Profile, City, Specialty, ProfileImage, Payment, ProfileService, Message, ProfileView
 from datetime import datetime, timedelta
 import cloudinary
 import cloudinary.uploader
 import re
+from translate import translate_profile
 
 profiles_bp = Blueprint('profiles', __name__)
 
@@ -25,7 +26,11 @@ def slugify(text):
 @profiles_bp.route('/bufetes')
 def list_profiles():
     page = request.args.get('page', 1, type=int)
-    profiles = Profile.query.filter_by(status='active').order_by(
+    profiles = Profile.query.filter(Profile.status.in_(['active', 'available'])).order_by(
+        db.case(
+            (Profile.status == 'active', 0),
+            else_=1
+        ),
         db.case(
             (Profile.tier == 'premium', 0),
             (Profile.tier == 'profesional', 1),
@@ -47,23 +52,32 @@ def profile_detail(slug):
     if not profile:
         abort(404)
 
-    if profile.status in ('pending_payment',):
+    if profile.status == 'pending_payment':
         return render_template('profiles/pending.html', profile=profile)
+
+    if profile.status not in ('active', 'available'):
+        abort(404)
 
     related = []
     if profile.city_rel and profile.specialties:
         related = Profile.query.filter(
-            Profile.status == 'active',
+            Profile.status.in_(['active', 'available']),
             Profile.city_id == profile.city_id,
             Profile.id != profile.id
         ).limit(4).all()
+
+    try:
+        db.session.add(ProfileView(profile_id=profile.id))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
 
     return render_template('profiles/detail.html', profile=profile, related=related)
 
 
 @profiles_bp.route('/bufetes/<slug>/reclamar')
 def claim_profile(slug):
-    return redirect(url_for('profiles.new_profile'))
+    return redirect(url_for('profiles.new_profile', claim=slug))
 
 
 @profiles_bp.route('/nuevo-perfil', methods=['GET', 'POST'])
@@ -71,6 +85,7 @@ def claim_profile(slug):
 def new_profile():
     cities = City.query.order_by(City.name).all()
     specialties = Specialty.query.order_by(Specialty.name).all()
+    existing_profile = Profile.query.filter_by(user_id=current_user.id).first()
 
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
@@ -79,7 +94,8 @@ def new_profile():
 
         if not name:
             flash('El nombre es obligatorio.', 'danger')
-            return render_template('profiles/new.html', cities=cities, specialties=specialties)
+            return render_template('profiles/new.html', cities=cities, specialties=specialties,
+                                   existing_profile=existing_profile)
 
         slug = slugify(name)
         base_slug = slug
@@ -109,7 +125,8 @@ def new_profile():
 
         return redirect(url_for('payments.start_subscription', profile_id=profile.id))
 
-    return render_template('profiles/new.html', cities=cities, specialties=specialties)
+    return render_template('profiles/new.html', cities=cities, specialties=specialties,
+                           existing_profile=existing_profile)
 
 
 @profiles_bp.route('/mi-perfil', methods=['GET', 'POST'])
@@ -117,6 +134,7 @@ def new_profile():
 def my_profile():
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
+        flash('No encontramos un perfil vinculado a tu cuenta. Puedes crear uno nuevo aquí.', 'info')
         return redirect(url_for('profiles.new_profile'))
 
     cities = City.query.order_by(City.name).all()
@@ -124,11 +142,20 @@ def my_profile():
 
     if request.method == 'POST':
         profile.name = request.form.get('name', profile.name).strip()
-        profile.description = request.form.get('description', '').strip()
         profile.email = request.form.get('email', '').strip()
+        profile.phone_country_code = request.form.get('phone_country_code', '+57').strip()
         profile.phone = request.form.get('phone', '').strip()
         profile.website = request.form.get('website', '').strip()
         profile.address = request.form.get('address', '').strip()
+
+        new_description = request.form.get('description', '').strip()
+        if new_description != (profile.description or ''):
+            profile.description = new_description or None
+            if new_description:
+                translate_profile(profile, new_description, 'description')
+            else:
+                profile.description_es = None
+                profile.description_en = None
 
         city_id = request.form.get('city_id')
         profile.city_id = city_id if city_id else None
@@ -161,8 +188,45 @@ def my_profile():
         flash('Perfil actualizado correctamente.', 'success')
         return redirect(url_for('profiles.my_profile'))
 
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    views_30d = ProfileView.query.filter(
+        ProfileView.profile_id == profile.id,
+        ProfileView.visited_at >= thirty_days_ago
+    ).count()
+    contacts_30d = Message.query.filter(
+        Message.profile_id == profile.id,
+        Message.created_at >= thirty_days_ago
+    ).count()
+    contacts_total = Message.query.filter(
+        Message.profile_id == profile.id
+    ).count()
+    replied_msgs = Message.query.filter(
+        Message.profile_id == profile.id,
+        Message.replied_at.isnot(None)
+    ).all()
+    if replied_msgs:
+        total_sec = sum(
+            (m.replied_at - m.created_at).total_seconds()
+            for m in replied_msgs
+            if m.replied_at and m.created_at and m.replied_at > m.created_at
+        )
+        avg_sec = total_sec / len(replied_msgs) if total_sec > 0 else 0
+        h, m_val = int(avg_sec // 3600), int((avg_sec % 3600) // 60)
+        avg_response = f"{h}h {m_val}m" if h > 0 else (f"{m_val}m" if m_val > 0 else "<1m")
+    else:
+        avg_response = "—"
+
+    stats = {
+        'views_30d': views_30d,
+        'contacts_30d': contacts_30d,
+        'contacts_total': contacts_total,
+        'avg_response': avg_response,
+        'consultations': profile.consultations_count or 0,
+        'clients': profile.clients_count or 0,
+    }
+
     return render_template('profiles/edit.html', profile=profile,
-                           cities=cities, specialties=specialties)
+                           cities=cities, specialties=specialties, stats=stats)
 
 
 @profiles_bp.route('/mi-perfil/eliminar-imagen/<int:image_id>', methods=['POST'])
@@ -201,7 +265,7 @@ def delete_profile():
     if stripe_key and profile.stripe_subscription_id:
         stripe_lib.api_key = stripe_key
         try:
-            stripe_lib.Subscription.modify(profile.stripe_subscription_id, cancel_at_period_end=True)
+            stripe_lib.Subscription.cancel(profile.stripe_subscription_id)
         except Exception:
             pass
 
@@ -215,7 +279,14 @@ def delete_profile():
 def by_city(slug):
     city = City.query.filter_by(slug=slug).first_or_404()
     page = request.args.get('page', 1, type=int)
-    profiles = Profile.query.filter_by(status='active', city_id=city.id).order_by(
+    profiles = Profile.query.filter(
+        Profile.status.in_(['active', 'available']),
+        Profile.city_id == city.id
+    ).order_by(
+        db.case(
+            (Profile.status == 'active', 0),
+            else_=1
+        ),
         db.case(
             (Profile.tier == 'premium', 0),
             (Profile.tier == 'profesional', 1),
@@ -248,21 +319,33 @@ def send_contact(slug):
     db.session.commit()
 
     # Email notification to lawyer
-    lawyer_email = profile.email or profile.user.email if profile.user else None
+    lawyer_email = profile.email or (profile.user.email if profile.user else None)
+    base_url = current_app.config.get('BASE_URL', 'https://abogadoya.com.co')
     if lawyer_email and current_app.config.get('RESEND_API_KEY'):
         try:
             resend.Emails.send({
-                "from": current_app.config.get('MAIL_FROM', 'noreply@Abogadoya.com.co'),
+                "from": current_app.config.get('MAIL_FROM', 'noreply@abogadoya.com.co'),
+                "reply_to": sender_email,
                 "to": [lawyer_email],
-                "subject": "Nueva consulta — Abogadoya.com.co",
-                "text": (
-                    f"Nueva consulta en Abogadoya.com.co\n\n"
-                    f"De: {sender_name} <{sender_email}>\n"
-                    f"Teléfono: {sender_phone or '—'}\n\n"
-                    f"{body}\n\n"
-                    f"---\nInicia sesión para responder:\n"
-                    f"{current_app.config['BASE_URL']}/mi-perfil/mensajes"
-                )
+                "subject": f"Nueva consulta de {sender_name} — Abogadoya.com.co",
+                "html": f"""
+<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
+  <div style="background:#1a3a5c;padding:24px 32px;border-radius:8px 8px 0 0">
+    <h2 style="color:#fff;margin:0;font-size:18px">📩 Nueva consulta de un cliente</h2>
+  </div>
+  <div style="background:#f9f9f9;padding:28px 32px;border-radius:0 0 8px 8px">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+      <tr><td style="padding:8px 0;color:#6b7280;font-size:13px;width:120px">Nombre</td><td style="padding:8px 0;font-weight:700">{sender_name}</td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Email</td><td style="padding:8px 0"><a href="mailto:{sender_email}" style="color:#1a3a5c">{sender_email}</a></td></tr>
+      <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Teléfono</td><td style="padding:8px 0">{sender_phone or '—'}</td></tr>
+    </table>
+    <div style="background:#fff;border-left:4px solid #1a3a5c;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:24px">
+      <p style="margin:0;font-size:14px;line-height:1.7;color:#333">{body}</p>
+    </div>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:16px">Puedes responder directamente a este correo — el cliente recibirá tu respuesta inmediatamente.</p>
+    <a href="{base_url}/mi-perfil/mensajes" style="background:#1a3a5c;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:14px">Ver en mi panel →</a>
+  </div>
+</div>"""
             })
         except Exception:
             pass
@@ -297,6 +380,10 @@ def add_service():
         sort_order=len(profile.services)
     )
     db.session.add(svc)
+    db.session.flush()
+    translate_profile(svc, title, 'title')
+    if description:
+        translate_profile(svc, description, 'description')
     db.session.commit()
     flash('Servicio añadido.' if session.get('lang') != 'en' else 'Service added.', 'success')
     return redirect(url_for('profiles.my_profile'))
@@ -345,16 +432,28 @@ def reply_message(msg_id):
 
     if current_app.config.get('RESEND_API_KEY'):
         try:
+            lawyer_reply_email = profile.email or (profile.user.email if profile.user else None)
             resend.Emails.send({
-                "from": current_app.config.get('MAIL_FROM', 'noreply@Abogadoya.com.co'),
+                "from": current_app.config.get('MAIL_FROM', 'noreply@abogadoya.com.co'),
+                "reply_to": lawyer_reply_email,
                 "to": [msg.sender_email],
                 "subject": f"Respuesta de {profile.name} — Abogadoya.com.co",
-                "text": (
-                    f"Hola {msg.sender_name},\n\n"
-                    f"{profile.name} ha respondido a tu consulta en Abogadoya.com.co:\n\n"
-                    f"{reply_text}\n\n"
-                    f"---\nAbogadoya.com.co"
-                )
+                "html": f"""
+<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#1a1a1a">
+  <div style="background:#1a3a5c;padding:24px 32px;border-radius:8px 8px 0 0">
+    <h2 style="color:#fff;margin:0;font-size:18px">Respuesta de {profile.name}</h2>
+  </div>
+  <div style="background:#f9f9f9;padding:28px 32px;border-radius:0 0 8px 8px">
+    <p style="margin:0 0 16px">Hola <strong>{msg.sender_name}</strong>,</p>
+    <p style="margin:0 0 20px;color:#555;font-size:14px">{profile.name} ha respondido a tu consulta:</p>
+    <div style="background:#fff;border-left:4px solid #1a3a5c;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:24px">
+      <p style="margin:0;font-size:14px;line-height:1.7;color:#333">{reply_text}</p>
+    </div>
+    <p style="font-size:13px;color:#6b7280">Puedes responder directamente a este correo para continuar la conversación con {profile.name}.</p>
+    <hr style="border:none;border-top:1px solid #e0e0e0;margin:20px 0">
+    <p style="font-size:12px;color:#aaa;margin:0">Abogadoya.com.co — Directorio jurídico de Colombia</p>
+  </div>
+</div>"""
             })
         except Exception:
             pass
@@ -375,6 +474,26 @@ def mark_read(msg_id):
     return redirect(url_for('profiles.my_messages'))
 
 
+@profiles_bp.route('/mi-perfil/reportar-consulta', methods=['POST'])
+@login_required
+def report_consultation():
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    profile.consultations_count = (profile.consultations_count or 0) + 1
+    db.session.commit()
+    flash('Consulta registrada.' if session.get('lang') != 'en' else 'Consultation recorded.', 'success')
+    return redirect(url_for('profiles.my_profile'))
+
+
+@profiles_bp.route('/mi-perfil/reportar-cliente', methods=['POST'])
+@login_required
+def report_client():
+    profile = Profile.query.filter_by(user_id=current_user.id).first_or_404()
+    profile.clients_count = (profile.clients_count or 0) + 1
+    db.session.commit()
+    flash('Cliente registrado.' if session.get('lang') != 'en' else 'Client recorded.', 'success')
+    return redirect(url_for('profiles.my_profile'))
+
+
 @profiles_bp.route('/bufetes/especialidad/<slug>')
 def by_specialty(slug):
     specialty = Specialty.query.filter_by(slug=slug).first_or_404()
@@ -382,7 +501,7 @@ def by_specialty(slug):
     page = request.args.get('page', 1, type=int)
 
     query = Profile.query.filter(
-        Profile.status == 'active',
+        Profile.status.in_(['active', 'available']),
         Profile.specialties.any(id=specialty.id)
     )
 
@@ -392,6 +511,10 @@ def by_specialty(slug):
             query = query.filter_by(city_id=city.id)
 
     query = query.order_by(
+        db.case(
+            (Profile.status == 'active', 0),
+            else_=1
+        ),
         db.case(
             (Profile.tier == 'premium', 0),
             (Profile.tier == 'profesional', 1),

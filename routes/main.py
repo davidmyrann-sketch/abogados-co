@@ -20,7 +20,7 @@ def index():
     professional = Profile.query.filter_by(status='active', tier='profesional').limit(6).all()
     cities = City.query.order_by(City.name).all()
     specialties = Specialty.query.order_by(Specialty.name).all()
-    total_profiles = Profile.query.filter_by(status='active').count()
+    total_profiles = Profile.query.filter(Profile.status.in_(['active', 'available'])).count()
     return render_template('index.html',
                            featured=featured,
                            professional=professional,
@@ -35,7 +35,7 @@ def search():
     specialty_slug = request.args.get('especialidad', '').strip()
     page = request.args.get('page', 1, type=int)
 
-    query = Profile.query.filter_by(status='active')
+    query = Profile.query.filter(Profile.status.in_(['active', 'available']))
 
     if q:
         query = query.filter(
@@ -54,6 +54,10 @@ def search():
             query = query.filter(Profile.specialties.any(id=spec.id))
 
     query = query.order_by(
+        db.case(
+            (Profile.status == 'active', 0),
+            else_=1
+        ),
         db.case(
             (Profile.tier == 'premium', 0),
             (Profile.tier == 'profesional', 1),
@@ -119,7 +123,7 @@ def sitemap():
     for spec in specialties:
         urls.append((base + f'/bufetes/especialidad/{spec.slug}', today, 'weekly', '0.7'))
 
-    profiles = Profile.query.filter_by(status='active').all()
+    profiles = Profile.query.filter(Profile.status.in_(['active', 'available'])).all()
     for p in profiles:
         urls.append((base + f'/bufetes/{p.slug}', today, 'weekly', '0.8'))
 
@@ -143,7 +147,7 @@ def search_suggest():
     if len(q) < 2:
         return jsonify([])
     results = Profile.query.filter(
-        Profile.status == 'active',
+        Profile.status.in_(['active', 'available']),
         Profile.name.ilike(f'%{q}%')
     ).limit(8).all()
     return jsonify([{'name': p.name, 'slug': p.slug} for p in results])
